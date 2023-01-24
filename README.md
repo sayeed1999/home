@@ -6,20 +6,25 @@ This monolith repo will contain all microservices for the "virtual home" project
 ```
 src
 │ app.js # App entry point
-└───api # Express route controllers for all the endpoints of the app
-└─────routes
-└─────middlewares
-└───config # Environment variables and configuration related stuff
-└───jobs # Jobs definitions for agenda.js
-└───loaders # Split the startup process into modules
-└───models # Database models
-└───modules
-└─────controllers
-└─────services
-└─────repository
-└───subscribers # Event handlers for async task
-└───types # Type declaration files (d.ts) for Typescript
-└───utils
-└─────constants
-└─────helpers
+└─── api # Express route controllers for all the endpoints of the app
+└───── routes
+└───── middlewares
+└─── config # Environment variables and configuration related stuff
+└─── jobs # Jobs definitions for agenda.js
+└─── loaders # Split the startup process into modules
+└─── models # Database models
+└─── modules
+└───── base
+└─────── controller
+└─────── service
+└─────── repository
+└───── <module>
+└─────── controller
+└─────── service
+└─────── repository
+└─── subscribers # Event handlers for async task
+└─── types # Type declaration files (d.ts) for Typescript
+└─── utils
+└───── constants
+└───── helpers
 ```
