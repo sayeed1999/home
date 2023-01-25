@@ -3,16 +3,8 @@ const db = Provider.getInstance();
 import { validate as emailValidate } from "email-validator";
 import PasswordValidator from "password-validator";
 const passwordValidator = new PasswordValidator();
-import bcrypt from "bcrypt";
 import { generateToken } from "../../../utils/helpers/jwt";
-
-const hashPassword = async (password: string) => {
-  // Hash the password
-  const saltRounds = 11;
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  return { hashedPassword, salt };
-};
+import { hashPassword, verifyPassword } from "../../../utils/helpers/password";
 
 export const register = async (req: any, res: any, next: any) => {
   try {
@@ -66,7 +58,7 @@ export const login = async (req: any, res: any, next: any) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const isPasswordCorrect = await verifyPassword(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
