@@ -1,6 +1,6 @@
 import { Provider } from "../../../models/provider";
 const db = Provider.getInstance();
-import { validate as emailValidate } from "email-validator";
+import { validateEmail } from "../../../utils/helpers/email";
 import { generateToken } from "../../../utils/helpers/jwt";
 import {
   hashPassword,
@@ -12,7 +12,7 @@ export const register = async (req: any, res: any, next: any) => {
   try {
     let { email, password, name } = req.body;
 
-    if (!email || !emailValidate(email))
+    if (!email || !validateEmail(email))
       return res.status(400).json({ message: "must provide a valid email" });
     if (!password || !validatePassword(password))
       return res.status(400).json({
