@@ -1,10 +1,12 @@
 import { Provider } from "../../../models/provider";
 const db = Provider.getInstance();
 import { validate as emailValidate } from "email-validator";
-import PasswordValidator from "password-validator";
-const passwordValidator = new PasswordValidator();
 import { generateToken } from "../../../utils/helpers/jwt";
-import { hashPassword, verifyPassword } from "../../../utils/helpers/password";
+import {
+  hashPassword,
+  validatePassword,
+  verifyPassword,
+} from "../../../utils/helpers/password";
 
 export const register = async (req: any, res: any, next: any) => {
   try {
@@ -12,23 +14,7 @@ export const register = async (req: any, res: any, next: any) => {
 
     if (!email || !emailValidate(email))
       return res.status(400).json({ message: "must provide a valid email" });
-    if (
-      !password ||
-      !passwordValidator
-        .is()
-        .min(6)
-        .is()
-        .max(100)
-        .has()
-        .uppercase()
-        .has()
-        .lowercase()
-        .has()
-        .digits(2)
-        .has()
-        .not()
-        .spaces()
-    )
+    if (!password || !validatePassword(password))
       return res.status(400).json({
         message:
           "must provide a strong password. criteria: min length 6, max length 100, no spaces allowed, must have one uppercase & lowercase, must have atleast two digits",
