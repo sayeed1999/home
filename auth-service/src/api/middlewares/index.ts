@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import { verifyToken } from "../../utils/helpers/jwt";
 
 export const routeNotFoundHandler = (req: any, res: any, next: any) => {
   res
@@ -14,10 +14,9 @@ export const globalErrorHandler = (err: any, req: any, res: any, next: any) => {
 // Middleware function to validate the JWT and set req.user
 export const authenticate = (req: any, res: any, next: any) => {
   const token = req.headers.authorization;
-  const secret = "12345678910111";
   try {
     // Verify the JWT and decode the payload
-    const decoded = jwt.verify(token, secret);
+    const decoded = verifyToken(token);
     // Set the user data on the request object
     req.user = decoded;
     next();

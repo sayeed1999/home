@@ -4,7 +4,7 @@ import { validate as emailValidate } from "email-validator";
 import PasswordValidator from "password-validator";
 const passwordValidator = new PasswordValidator();
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../../../utils/helpers/jwt";
 
 const hashPassword = async (password: string) => {
   // Hash the password
@@ -12,18 +12,6 @@ const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(saltRounds);
   const hashedPassword = await bcrypt.hash(password, salt);
   return { hashedPassword, salt };
-};
-
-const generateToken = (user: any) => {
-  const secret = "12345678910111";
-  const { id, email, name } = user;
-  const payload = {
-    id,
-    email,
-    name,
-  };
-  // Sign the JWT using the secret key and return it
-  return jwt.sign(payload, secret, { expiresIn: "100h" });
 };
 
 export const register = async (req: any, res: any, next: any) => {
