@@ -32,7 +32,13 @@ const User = (sequelize: Sequelize) => <UserStatic>sequelize.define(
         allowNull: false,
         unique: true,
       },
+      // hashed password using salt
       password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      // salt used to hash password
+      salt: {
         type: DataTypes.STRING,
         allowNull: false,
       },

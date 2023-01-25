@@ -22,6 +22,7 @@ export class Provider {
     this.UserRole = UserRole(this.sequelize);
 
     this.sequelize
+      // .sync({ force: true }) // use this when you need to delete db & again migrate!
       .sync()
       .then(() => console.log("# Database successfully instantiated..."))
       .catch((err) => console.log("# Error while instantiating database", err));
