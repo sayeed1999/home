@@ -14,23 +14,33 @@ type UserStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): UserModel;
 };
 
-const User = (sequelize: Sequelize) => <UserStatic>sequelize.define("User", {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+const User = (sequelize: Sequelize) => <UserStatic>sequelize.define(
+    "Users",
+    {
+      id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      emailVerified: {
+        type: DataTypes.BOOLEAN,
+      },
     },
-    email: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    emailVerified: {
-      type: DataTypes.BOOLEAN,
-    },
-  });
+    { timestamps: true }
+  );
 
 export { User, UserStatic };
