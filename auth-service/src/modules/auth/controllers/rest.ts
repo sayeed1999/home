@@ -26,22 +26,6 @@ const generateToken = (user: any) => {
   return jwt.sign(payload, secret, { expiresIn: "100h" });
 };
 
-// Middleware function to validate the JWT and set req.user
-export const authenticate = (req: any, res: any, next: any) => {
-  const token = req.headers.authorization;
-  const secret = "12345678910111";
-  try {
-    // Verify the JWT and decode the payload
-    const decoded = jwt.verify(token, secret);
-    // Set the user data on the request object
-    req.user = decoded;
-    next();
-  } catch (err) {
-    // If the JWT is invalid, return an error
-    res.status(401).send({ message: "Unauthorized" });
-  }
-};
-
 export const register = async (req: any, res: any, next: any) => {
   try {
     let { email, password, name } = req.body;

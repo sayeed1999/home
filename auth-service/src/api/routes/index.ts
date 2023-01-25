@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {
-  authenticate,
   getCurrentUser,
   login,
   register,
   updateCurrentUser,
 } from "../../modules/auth/controllers/rest";
+import { authenticate } from "../middlewares";
 const router = Router();
 
 router.post("/register", register);
