@@ -49,4 +49,4 @@ const User = (sequelize: Sequelize) => <UserStatic>sequelize.define(
     { timestamps: true }
   );
 
-export { User, UserStatic };
+export { IUser, User, UserStatic };

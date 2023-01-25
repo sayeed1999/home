@@ -1,35 +1,9 @@
-import { Provider } from "../../../models/provider";
-const db = Provider.getInstance();
-import { validateEmail } from "../../../utils/helpers/email";
-import { generateToken } from "../../../utils/helpers/jwt";
-import {
-  hashPassword,
-  validatePassword,
-  verifyPassword,
-} from "../../../utils/helpers/password";
+import authService from "../services";
 
 export const register = async (req: any, res: any, next: any) => {
   try {
     let { email, password, name } = req.body;
-
-    if (!email || !validateEmail(email))
-      return res.status(400).json({ message: "must provide a valid email" });
-    if (!password || !validatePassword(password))
-      return res.status(400).json({
-        message:
-          "must provide a strong password. criteria: min length 6, max length 100, no spaces allowed, must have one uppercase & lowercase, must have atleast two digits",
-      });
-    if (!name) name = email.split("@")[0] || "";
-
-    const { hashedPassword, salt } = await hashPassword(password);
-
-    const user = await db.User.create({
-      email,
-      password: hashedPassword,
-      salt,
-      name,
-    });
-
+    const user = await authService.register({ email, password, name });
     res.status(201).json({ message: "User created successfully", data: user });
   } catch (error: any) {
     res.status(500).json({ message: error.message || "Error creating user" });
@@ -39,17 +13,7 @@ export const register = async (req: any, res: any, next: any) => {
 export const login = async (req: any, res: any, next: any) => {
   try {
     const { email, password } = req.body;
-    const user = await db.User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    const isPasswordCorrect = await verifyPassword(password, user.password);
-    if (!isPasswordCorrect) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    const token = generateToken(user);
+    const token = await authService.login({ email, password });
     res.status(200).send({ message: "Login successful", token });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
@@ -58,7 +22,8 @@ export const login = async (req: any, res: any, next: any) => {
 
 export const getCurrentUser = async (req: any, res: any, next: any) => {
   try {
-    const user = await db.User.findOne({ where: { id: req.user.id } });
+    const { id } = req.user;
+    const user = await authService.getCurrentUser(+id);
     // remove password and salt from response body!!
     res.json({ user });
   } catch (error) {
@@ -68,20 +33,8 @@ export const getCurrentUser = async (req: any, res: any, next: any) => {
 
 export const updateCurrentUser = async (req: any, res: any, next: any) => {
   try {
-    const { email, password, name } = req.body;
-    const user = await db.User.findOne({ where: { id: req.user.id } });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    if (name) user.name = name;
-    if (email) user.email = email;
-    if (password) {
-      const { hashedPassword, salt } = await hashPassword(password);
-      user.password = hashedPassword;
-      user.salt = salt;
-    }
-    const updatedUser = await user.update(user);
-    res.json({ message: "User updated successfully", user: updatedUser });
+    const user = await authService.updateCurrentUser(req.user.id, req.body);
+    res.json({ message: "User updated successfully", data: user });
   } catch (error) {
     res.status(500).json({ message: "Error updating user", error });
   }
