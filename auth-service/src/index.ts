@@ -27,12 +27,14 @@ app.listen(config.PORT, () => {
 });
 
 process.on("uncaughtException", function (err: Error) {
+  console.log("================== uncaught exception ======================");
   console.error(new Date().toUTCString() + " uncaughtException:", err.message);
   console.error(err.stack);
   process.exit(1);
 });
 
 process.on("unhandledRejection", function (err: Error) {
+  console.log("================== unhandled rejection ======================");
   console.error(new Date().toUTCString() + " unhandledRejection:", err.message);
   console.error(err.stack);
   process.exit(1);

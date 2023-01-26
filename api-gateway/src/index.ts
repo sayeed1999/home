@@ -1,7 +1,11 @@
 import express from "express";
 import { json } from "body-parser";
+import { authProxyMiddleware } from "./api/middlewares/proxies";
 
 const app = express();
+
+// redirecting to other servers
+app.use(authProxyMiddleware);
 
 app.use(json());
 
