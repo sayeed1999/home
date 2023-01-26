@@ -1,0 +1,22 @@
+version: "1.0.0"
+services:
+  # mysql:
+  #   container_name: db_mysql
+  #   image: mysql:latest
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: 123456
+  #     MYSQL_DATABASE: auth
+  #   ports:
+  #     - "3306:3306"
+  #   networks:
+  #     - my-network
+  api-gateway:
+    container_name: api-gateway
+    build: ./api-gateway
+    command: npm start
+    network_mode: bridge
+  auth-service:
+    container_name: auth-service
+    build: ./auth-service
+    command: npm start
+    network_mode: bridge
