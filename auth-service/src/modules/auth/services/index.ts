@@ -6,6 +6,7 @@ import {
 } from "../../../utils/helpers/password";
 import { generateToken } from "../../../utils/helpers/jwt";
 import repository from "../repository";
+import CustomError from "../../../utils/errors/custom-error";
 
 const register = async ({
   email,
@@ -15,10 +16,11 @@ const register = async ({
   [key: string]: string;
 }) => {
   if (!email || !validateEmail(email))
-    throw new Error("must provide a valid email");
+    throw new CustomError("must provide a valid email", 400);
   if (!password || !validatePassword(password))
-    throw new Error(
-      "must provide a strong password. criteria: min length 6, max length 100, no spaces allowed, must have one uppercase & lowercase, must have atleast two digits"
+    throw new CustomError(
+      "must provide a strong password. criteria: min length 6, max length 100, no spaces allowed, must have one uppercase & lowercase, must have atleast two digits",
+      400
     );
   if (!name) name = email.split("@")[0] || "";
 
@@ -35,12 +37,12 @@ const register = async ({
 const login = async ({ email, password }: { [key: string]: string }) => {
   const user = await repository.findOne({ email });
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new CustomError("User doesn't exist", 404);
   }
 
   const isPasswordCorrect = await verifyPassword(password, user.password);
   if (!isPasswordCorrect) {
-    throw new Error("Invalid email or password");
+    throw new CustomError("Invalid email or password", 400);
   }
 
   const token = generateToken(user);
@@ -58,7 +60,7 @@ const updateCurrentUser = async (
 ) => {
   const user = await repository.findOne({ id });
   if (!user) {
-    throw new Error("User not found");
+    throw new CustomError("User doesn't exist", 404);
   }
   if (updated.name) user.name = updated.name;
   if (updated.email) user.email = updated.email;
