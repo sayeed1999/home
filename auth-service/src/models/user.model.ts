@@ -1,4 +1,5 @@
 import { Sequelize, Model, DataTypes, BuildOptions } from "sequelize";
+import { AccountStatus } from "../utils/enums";
 
 interface IUser {
   id: number;
@@ -42,11 +43,65 @@ const User = (sequelize: Sequelize) => <UserStatic>sequelize.define(
         type: DataTypes.STRING,
         allowNull: false,
       },
-      emailVerified: {
+      status: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+        defaultValue: AccountStatus.Active,
+      },
+      email_verified: {
         type: DataTypes.BOOLEAN,
       },
+      // when user is sent a email verify url, the token will be saved on db for cross-checking
+      email_verification_token: {
+        type: DataTypes.STRING,
+      },
+      phone: {
+        type: DataTypes.STRING,
+      },
+      phone_verified: {
+        type: DataTypes.BOOLEAN,
+      },
+      // when user is sent a phone verify message, the token will be saved on db for cross-checking
+      phone_verification_token: {
+        type: DataTypes.STRING,
+      },
+      address: {
+        type: DataTypes.STRING,
+      },
+      birthdate: {
+        type: DataTypes.DATEONLY,
+      },
+      gender: {
+        type: DataTypes.TINYINT,
+      },
+      last_login: {
+        type: DataTypes.DATE,
+      },
+      preferences: {
+        type: DataTypes.STRING,
+      },
+      profile_photo: {
+        type: DataTypes.STRING,
+      },
+      security_question: {
+        type: DataTypes.STRING,
+      },
+      is_banned: {
+        type: DataTypes.BOOLEAN,
+      },
+      country: {
+        type: DataTypes.STRING,
+      },
+      city: {
+        type: DataTypes.STRING,
+      },
+      state: {
+        type: DataTypes.STRING,
+      },
     },
-    { timestamps: true }
+    {
+      timestamps: true, // adds createdAt and updatedAt timestamps to the model
+    }
   );
 
 export { IUser, User, UserStatic };
