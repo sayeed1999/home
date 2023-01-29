@@ -43,6 +43,10 @@ const User = (sequelize: Sequelize) => <UserStatic>sequelize.define(
         type: DataTypes.STRING,
         allowNull: false,
       },
+      // when a user requests for password reset, the token generated is saved here
+      password_reset_token: {
+        type: DataTypes.STRING,
+      },
       status: {
         type: DataTypes.TINYINT,
         allowNull: false,
