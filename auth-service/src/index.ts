@@ -5,12 +5,12 @@ import morgan from "morgan";
 import router from "./api/routes";
 import config from "./config";
 import { globalErrorHandler, routeNotFoundHandler } from "./api/middlewares";
+import { closeRabbitMQ, connectToRabbitMQ } from "./loaders/rabbitmq";
 
 const app = express();
 
 app.use(morgan("dev"));
 app.use(json());
-
 app.use(
   cors({
     origin: "*",
@@ -18,12 +18,23 @@ app.use(
   })
 );
 
+/* rabbitmq setup starts here */
+connectToRabbitMQ().then(
+  () => console.log("# Connection to rabbitmq estalished..."),
+  (err) => console.error("# Connection to rabbitmq failed...", err.stack)
+);
+process.on("SIGINT", closeRabbitMQ);
+process.on("SIGTERM", closeRabbitMQ);
+process.on("exit", closeRabbitMQ);
+process.on("uncaughtException", closeRabbitMQ);
+/* rabbitmq setup ends here */
+
 app.use("/", router);
 app.all("*", routeNotFoundHandler);
 app.use(globalErrorHandler);
 
 app.listen(config.PORT, () => {
-  console.log(`Listening on port ${config.PORT}!`);
+  console.log(`# Listening on port ${config.PORT}!`);
 });
 
 process.on("uncaughtException", function (err: Error) {
