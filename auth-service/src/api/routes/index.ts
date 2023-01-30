@@ -10,8 +10,9 @@ const router = Router();
 
 router.post("/register", register);
 router.post("/login", login);
-router
-  .get("/current-user", authenticate, getCurrentUser)
-  .patch("/current-user", authenticate, updateCurrentUser);
+router.get("/current-user", authenticate, getCurrentUser);
+router.patch("/current-user", authenticate, updateCurrentUser);
+// router.post("/forgot-password", forgotPassword);
+// router.post("/reset-password", resetEmail);
 
 export default router;
