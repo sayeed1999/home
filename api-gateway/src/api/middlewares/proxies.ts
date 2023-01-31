@@ -7,3 +7,19 @@ export const authProxyMiddleware = createProxyMiddleware("/auth", {
     "^/auth": "",
   },
 });
+
+export const homeProxyMiddleware = createProxyMiddleware("/home", {
+  target: `http://localhost:4002`,
+  changeOrigin: true,
+  pathRewrite: {
+    "^/home": "",
+  },
+});
+
+export const ecomProxyMiddleware = createProxyMiddleware("/ecom", {
+  target: `http://localhost:4004`,
+  changeOrigin: true,
+  pathRewrite: {
+    "^/ecom": "",
+  },
+});
