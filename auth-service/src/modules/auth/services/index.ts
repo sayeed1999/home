@@ -7,6 +7,7 @@ import {
 import { generateToken } from "../../../utils/helpers/jwt";
 import repository from "../repository";
 import CustomError from "../../../utils/errors/custom-error";
+import { fanout_user_creation } from "../../../message-queue";
 
 const register = async ({
   email,
@@ -31,6 +32,11 @@ const register = async ({
     salt,
     name,
   });
+
+  // notify other microservices that user is created
+  // running this as background task by not using 'await'!
+  fanout_user_creation(user);
+
   return user;
 };
 
