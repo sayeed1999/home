@@ -6,16 +6,12 @@ const createComment = async (body: any) => {
   return post;
 };
 const getAllComments = async () => {
-  async (req: any, res: any, next: any) => {
-    const post = await db.Comment.find();
-    return post;
-  };
+  const post = await db.Comment.find();
+  return post;
 };
 const getCommentById = async (id: any) => {
-  async (req: any, res: any, next: any) => {
-    const post = await db.Comment.findById(id);
-    return post;
-  };
+  const post = await db.Comment.findById(id);
+  return post;
 };
 const updateCommentById = async (id: any, body: any) => {
   const post = await db.Comment.findByIdAndUpdate(id, body);

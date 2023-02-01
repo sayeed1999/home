@@ -10,7 +10,7 @@ export interface IPost extends mongoose.Document {
   comment_count: number;
 }
 
-const PostSchema = new Schema(
+export const PostSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,

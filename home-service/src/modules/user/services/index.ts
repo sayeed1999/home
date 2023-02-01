@@ -6,16 +6,12 @@ const createUser = async (body: any) => {
   return post;
 };
 const getAllUsers = async () => {
-  async (req: any, res: any, next: any) => {
-    const post = await db.User.find();
-    return post;
-  };
+  const post = await db.User.find();
+  return post;
 };
 const getUserById = async (id: any) => {
-  async (req: any, res: any, next: any) => {
-    const post = await db.User.findById(id);
-    return post;
-  };
+  const post = await db.User.findById(id);
+  return post;
 };
 const updateUserById = async (id: any, body: any) => {
   const post = await db.User.findByIdAndUpdate(id, body);
