@@ -40,6 +40,7 @@ You can run each microservice independently by `npm start` command.
 
 
 ## EACH SERVICE FOLDER STRUCTURE
+#### Each module inside ./modules dir will follow "Onion architecture" which says controller layer shall hold request-response processing, service layer shall hold businesses and repository layer shall hold database queries. This way, one layer will be topped over the other layer like a sandwitch!
 ```
 src
 │ app.js # App entry point
