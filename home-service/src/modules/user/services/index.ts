@@ -1,10 +1,35 @@
-import express from "express";
-import { json } from "body-parser";
+import Provider from "../../../models/provider";
+const db = Provider.getInstance();
 
-const app = express();
+const createUser = async (body: any) => {
+  const post = await db.User.create(body);
+  return post;
+};
+const getAllUsers = async () => {
+  async (req: any, res: any, next: any) => {
+    const post = await db.User.find();
+    return post;
+  };
+};
+const getUserById = async (id: any) => {
+  async (req: any, res: any, next: any) => {
+    const post = await db.User.findById(id);
+    return post;
+  };
+};
+const updateUserById = async (id: any, body: any) => {
+  const post = await db.User.findByIdAndUpdate(id, body);
+  return post;
+};
+const deleteUserById = async (id: any) => {
+  const post = await db.User.findByIdAndDelete(id);
+  return post;
+};
 
-app.use(json());
-
-app.listen(4004, () => {
-  console.log("Listening on port 4004!");
-});
+export default {
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUserById,
+  deleteUserById,
+};
