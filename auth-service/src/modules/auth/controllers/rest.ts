@@ -28,3 +28,10 @@ export const updateCurrentUser = catchErrors(
     res.json({ message: "User updated successfully", data: user });
   }
 );
+
+export const deleteCurrentUser = catchErrors(
+  async (req: any, res: any, next: any) => {
+    const user = await authService.deleteCurrentUser(req.user.id);
+    res.json({ message: "User deleted successfully", data: user });
+  }
+);

@@ -79,4 +79,15 @@ const updateCurrentUser = async (
   return updatedUser;
 };
 
-export default { register, login, getCurrentUser, updateCurrentUser };
+const deleteCurrentUser = async (id: number) => {
+  const user = await repository.deleteById(id);
+  return user;
+};
+
+export default {
+  register,
+  login,
+  getCurrentUser,
+  updateCurrentUser,
+  deleteCurrentUser,
+};
