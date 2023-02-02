@@ -7,7 +7,7 @@ export const worker_01 = new Worker(MessageQueue.AUTH_HOME, async (job) => {
     console.log("processed job:", job.name, job.data);
     if (job.name === Job.UserCreated) {
       const {
-        _id: user_id,
+        id: user_id,
         name,
         email,
         phone,
