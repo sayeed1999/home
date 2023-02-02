@@ -42,6 +42,10 @@ export const PostSchema = new Schema(
         ref: "Comment",
       },
     ],
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

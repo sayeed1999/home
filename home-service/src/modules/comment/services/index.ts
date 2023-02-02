@@ -5,10 +5,6 @@ const createComment = async (body: any) => {
   const post = await db.Comment.create(body);
   return post;
 };
-const getAllComments = async () => {
-  const post = await db.Comment.find();
-  return post;
-};
 const getCommentById = async (id: any) => {
   const post = await db.Comment.findById(id);
   return post;
@@ -24,7 +20,6 @@ const deleteCommentById = async (id: any) => {
 
 export default {
   createComment,
-  getAllComments,
   getCommentById,
   updateCommentById,
   deleteCommentById,

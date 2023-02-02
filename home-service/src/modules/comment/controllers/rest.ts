@@ -8,13 +8,6 @@ export const createComment = catchErrors(
   }
 );
 
-export const getAllComments = catchErrors(
-  async (req: any, res: any, next: any) => {
-    const data = await commentService.getAllComments();
-    res.status(200).json({ data });
-  }
-);
-
 export const getSingleComment = catchErrors(
   async (req: any, res: any, next: any) => {
     const data = await commentService.getCommentById(req.params.id);
