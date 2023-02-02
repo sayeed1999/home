@@ -9,12 +9,15 @@ const createPost = async (body: any) => {
 };
 
 const getAllPosts = async () => {
-  const post = await db.Post.find();
+  const post = await db.Post.find().populate({
+    path: "comments",
+    options: { limit: 3 },
+  });
   return post;
 };
 
 const getPostById = async (id: any) => {
-  const post = await db.Post.findById(id);
+  const post = await db.Post.findById(id).populate("comments");
   return post;
 };
 

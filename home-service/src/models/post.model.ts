@@ -36,10 +36,12 @@ export const PostSchema = new Schema(
         ref: "User",
       },
     ],
-    comment_count: {
-      type: Number,
-      default: 0,
-    },
+    comments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   {
     timestamps: true,
