@@ -20,6 +20,13 @@ export const getSinglePost = catchErrors(
   }
 );
 
+export const getCommentsByPostId = catchErrors(
+  async (req: any, res: any, next: any) => {
+    const data = await postService.getCommentsByPostId(req.params.id);
+    res.status(200).json({ data });
+  }
+);
+
 export const updatePostById = catchErrors(
   async (req: any, res: any, next: any) => {
     const data = await postService.updatePostById(req.params.id, req.body);

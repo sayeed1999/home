@@ -5,12 +5,14 @@ import {
   deletePostById,
   getAllPosts,
   getSinglePost,
+  getCommentsByPostId,
   updatePostById,
 } from "../../modules/post/controllers/rest";
 
 router.post("", createPost);
 router.get("", getAllPosts);
 router.get("/:id", getSinglePost);
+router.get("/:id/comments", getCommentsByPostId);
 router.put("/:id", updatePostById);
 router.delete("/:id", deletePostById);
 

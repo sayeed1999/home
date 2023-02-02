@@ -21,6 +21,11 @@ const getPostById = async (id: any) => {
   return post;
 };
 
+const getCommentsByPostId = async (id: any) => {
+  const comments = await db.Comment.find({ post: id });
+  return comments;
+};
+
 const updatePostById = async (id: any, body: any) => {
   const post = await db.Post.findByIdAndUpdate(id, body);
   postLogService.createLog(post);
@@ -37,6 +42,7 @@ export default {
   createPost,
   getAllPosts,
   getPostById,
+  getCommentsByPostId,
   updatePostById,
   deletePostById,
 };
