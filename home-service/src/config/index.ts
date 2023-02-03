@@ -4,5 +4,5 @@ dotenv.config();
 export default {
   NODE_ENV: process.env.NODE_ENV || "",
   PORT: process.env.PORT || 4002,
-  DATABASE_URL: process.env.DATABASE_URL || "",
+  DATABASE_URL: process.env.DATABASE_URL || "mongodb://localhost:27017",
 };

@@ -17,12 +17,20 @@ const find = async () => {
 };
 
 const findById = async (id: any) => {
-  const post = await db.Post.findById(id).populate("comments");
+  const post = await db.Post.findById({ _id: id }).populate("comments");
   return post;
 };
 
 const findByIdAndUpdate = async (id: any, body: any) => {
-  const post = await db.Post.findByIdAndUpdate(id, body);
+  const post = await db.Post.findByIdAndUpdate({ _id: id }, body);
+  return post;
+};
+
+const findByIdAndSoftDelete = async (id: any) => {
+  let body = {
+    deletedAt: Date.now(),
+  };
+  const post = await db.Post.findByIdAndUpdate({ _id: id }, body);
   return post;
 };
 
@@ -38,4 +46,5 @@ export default {
   findById,
   findByIdAndUpdate,
   findByIdAndDelete,
+  findByIdAndSoftDelete,
 };

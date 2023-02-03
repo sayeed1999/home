@@ -59,12 +59,17 @@ const updatePostById = async (id: any, body: any) => {
 /**
  * hard or soft delete a post, hard delete comments too
  * @param id
+ * @param hardDelete
  * @returns
  */
 const deletePostById = async (id: any, hardDelete: boolean = false) => {
-  // change the code here
-  const post = await postRepository.findByIdAndDelete(id);
-  postLogService.createLog(post);
+  let post;
+  if (!hardDelete) {
+    post = await postRepository.findByIdAndSoftDelete(id);
+    postLogService.createLog(post);
+  } else {
+    post = await postRepository.findByIdAndDelete(id);
+  }
   return post;
 };
 

@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
+import Provider from "./provider";
+const db = Provider.getInstance();
+
 export interface IPost extends mongoose.Document {
   user: any;
   message: string;
@@ -51,5 +54,9 @@ export const PostSchema = new Schema(
     timestamps: true,
   }
 );
+
+// PostSchema.post("remove", function (document) {
+//   db.Comment.deleteMany({ post: document._id });
+// });
 
 export default mongoose.model<IPost>("Post", PostSchema);
