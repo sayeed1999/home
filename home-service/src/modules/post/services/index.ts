@@ -1,7 +1,6 @@
 import Provider from "../../../models/provider";
 import postLogService from "../../post-log/services";
 import postRepository from "../repository";
-import commentRepository from "../../comment/repository";
 const db = Provider.getInstance();
 
 /**
@@ -11,7 +10,7 @@ const db = Provider.getInstance();
  */
 const createPost = async (body: any) => {
   const post = await postRepository.create(body);
-  await postLogService.createLog(post);
+  postLogService.createLog(post);
   return post;
 };
 
