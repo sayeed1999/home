@@ -5,9 +5,9 @@ import morgan from "morgan";
 import router from "./api/routes";
 import config from "./config";
 import { globalErrorHandler, routeNotFoundHandler } from "./api/middlewares";
-import { worker_01 } from "./message-queue";
+// import { worker_01 } from "./message-queue";
 import establishDbConnection from "./loaders/db-connection";
-worker_01;
+// worker_01;
 
 const app = express();
 
