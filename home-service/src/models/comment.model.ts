@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface IComment extends mongoose.Document {
+  _id: any;
   user: any;
   post: any;
   message: string;

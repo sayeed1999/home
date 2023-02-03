@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+const { ObjectId } = mongoose.Types; // couldnt use it in inteface types
 
 export interface IPost extends mongoose.Document {
+  _id: any;
   user: any;
   message: string;
   image: string;
   likes: any[];
   dislikes: any[];
-  comment_count: number;
+  comments: any[];
 }
 
 export const PostSchema = new Schema(
