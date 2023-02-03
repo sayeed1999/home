@@ -1,5 +1,7 @@
 import Provider from "../../../models/provider";
 import postLogService from "../../post-log/services";
+import postRepository from "../repository";
+import commentRepository from "../../comment/repository";
 const db = Provider.getInstance();
 
 /**
@@ -8,8 +10,8 @@ const db = Provider.getInstance();
  * @returns
  */
 const createPost = async (body: any) => {
-  const post = await db.Post.create(body);
-  postLogService.createLog(post);
+  const post = await postRepository.create(body);
+  await postLogService.createLog(post);
   return post;
 };
 
@@ -18,12 +20,7 @@ const createPost = async (body: any) => {
  * @returns
  */
 const getAllPosts = async () => {
-  const post = await db.Post.find({
-    $or: [{ deletedAt: { exists: false } }, { deletedAt: null }],
-  }).populate({
-    path: "comments",
-    options: { limit: 3 },
-  });
+  const post = await postRepository.find();
   return post;
 };
 
@@ -33,7 +30,7 @@ const getAllPosts = async () => {
  * @returns
  */
 const getPostById = async (id: any) => {
-  const post = await db.Post.findById(id).populate("comments");
+  const post = await postRepository.findById(id);
   return post;
 };
 
@@ -54,7 +51,7 @@ const getCommentsByPostId = async (id: any) => {
  * @returns
  */
 const updatePostById = async (id: any, body: any) => {
-  const post = await db.Post.findByIdAndUpdate(id, body);
+  const post = await postRepository.findByIdAndUpdate(id, body);
   postLogService.createLog(post);
   return post;
 };
@@ -66,7 +63,7 @@ const updatePostById = async (id: any, body: any) => {
  */
 const deletePostById = async (id: any, hardDelete: boolean = false) => {
   // change the code here
-  const post = await db.Post.findByIdAndDelete(id);
+  const post = await postRepository.findByIdAndDelete(id);
   postLogService.createLog(post);
   return post;
 };
