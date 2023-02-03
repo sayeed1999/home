@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface IUser extends mongoose.Document {
-  user_id: number;
+  _id: any; // mongoose _id
+  user_id: number; // id from auth-service
   name: string;
   email: string;
   phone: string;
