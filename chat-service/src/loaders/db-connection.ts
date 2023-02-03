@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import config from "../config";
 
 // Connect to MongoDB
-const establishDbConnection = () => {
+export const establishDbConnection = () => {
   const connectionString: string = config.DATABASE_URL;
   mongoose
     .connect(connectionString, {})
@@ -10,7 +10,10 @@ const establishDbConnection = () => {
     .catch((error) => console.error(error));
 };
 
-export default establishDbConnection;
-
+/**
+ * this code will not return undefined for accessing before initialization,
+ * because the default export is not undefined, but a well-defined object
+ * from mongoose library.
+ */
 // Export the mongoose connection
-// export default mongoose.connection;
+export default mongoose.connection;

@@ -5,11 +5,13 @@ import morgan from "morgan";
 import router from "./api/routes";
 import config from "./config";
 import { globalErrorHandler, routeNotFoundHandler } from "./api/middlewares";
-import establishDbConnection from "./loaders/db-connection";
+import { establishDbConnection } from "./loaders/db-connection";
+import { establishSocketConnection } from "./loaders/socket-io";
 // import { worker_01 } from "./message-queue";
 // worker_01;
 
 const app = express();
+const io = establishSocketConnection(app);
 
 app.use(morgan("dev"));
 app.use(json());

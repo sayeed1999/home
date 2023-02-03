@@ -23,6 +23,7 @@
     "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.11.18",
+    "@types/socket.io": "^3.0.2",
     "typescript": "^4.9.5"
   }
 }
