@@ -1,7 +1,6 @@
 import Provider from "../../../models/provider";
 import postLogService from "../../post-log/services";
 import postRepository from "../repository";
-import commentRepository from "../../comment/repository";
 const db = Provider.getInstance();
 
 /**
@@ -11,7 +10,7 @@ const db = Provider.getInstance();
  */
 const createPost = async (body: any) => {
   const post = await postRepository.create(body);
-  await postLogService.createLog(post);
+  postLogService.createLog(post);
   return post;
 };
 
@@ -59,12 +58,17 @@ const updatePostById = async (id: any, body: any) => {
 /**
  * hard or soft delete a post, hard delete comments too
  * @param id
+ * @param hardDelete
  * @returns
  */
 const deletePostById = async (id: any, hardDelete: boolean = false) => {
-  // change the code here
-  const post = await postRepository.findByIdAndDelete(id);
-  postLogService.createLog(post);
+  let post;
+  if (!hardDelete) {
+    post = await postRepository.findByIdAndSoftDelete(id);
+    postLogService.createLog(post);
+  } else {
+    post = await postRepository.findByIdAndDelete(id);
+  }
   return post;
 };
 

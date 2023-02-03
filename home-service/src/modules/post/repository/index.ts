@@ -26,8 +26,15 @@ const findByIdAndUpdate = async (id: any, body: any) => {
   return post;
 };
 
+const findByIdAndSoftDelete = async (id: any) => {
+  let body = {
+    deletedAt: Date.now(),
+  };
+  const post = await db.Post.findByIdAndUpdate(id, body, { new: true });
+  return post;
+};
+
 const findByIdAndDelete = async (id: any) => {
-  // change the code here
   const post = await db.Post.findByIdAndDelete(id);
   return post;
 };
@@ -38,4 +45,5 @@ export default {
   findById,
   findByIdAndUpdate,
   findByIdAndDelete,
+  findByIdAndSoftDelete,
 };

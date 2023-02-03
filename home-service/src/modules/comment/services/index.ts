@@ -1,4 +1,4 @@
-const commentRepository = require("../repository");
+import commentRepository from "../repository";
 
 const createComment = async (body: any) => {
   const comment = await commentRepository.create(body);
