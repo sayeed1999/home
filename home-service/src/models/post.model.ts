@@ -1,5 +1,7 @@
+import { NextFunction } from "express";
 import mongoose from "mongoose";
 import Comment from "./comment.model";
+import PostLog from "./post-log.model";
 const Schema = mongoose.Schema;
 const { ObjectId } = mongoose.Types; // couldnt use it in inteface types
 
@@ -55,6 +57,9 @@ export const PostSchema = new Schema(
   }
 );
 
+/**
+ * Implementing cascade deletion of comments
+ */
 const cascadeDelete = async function (this: any, next: any) {
   // retrieving the model first
   const posts = await this.model.find(this.getFilter());
@@ -66,18 +71,27 @@ const cascadeDelete = async function (this: any, next: any) {
   next();
 };
 
+/**
+ * Implement log insertion for CRUD on posts
+ */
+const insertLog = async function (doc: any, next: NextFunction) {
+  const temp = JSON.parse(JSON.stringify(doc));
+  temp.post_id = temp._id;
+  delete temp._id;
+  await PostLog.create(temp);
+  next();
+};
+
 PostSchema.pre(
   "findOneAndDelete",
   { document: false, query: true },
   cascadeDelete
 );
-
 PostSchema.pre("deleteOne", { document: false, query: true }, cascadeDelete);
 PostSchema.pre("deleteMany", { document: false, query: true }, cascadeDelete);
 PostSchema.pre("remove", { document: false, query: true }, cascadeDelete);
 
-// PostSchema.post("findOneAndDelete", async function (document) {
-//   await Comment.deleteMany({ post: document._id });
-// });
+PostSchema.post("save", insertLog);
+PostSchema.post("findOneAndUpdate", insertLog);
 
 export default mongoose.model<IPost>("Post", PostSchema);

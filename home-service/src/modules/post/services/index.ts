@@ -10,7 +10,6 @@ const db = Provider.getInstance();
  */
 const createPost = async (body: any) => {
   const post = await postRepository.create(body);
-  postLogService.createLog(post);
   return post;
 };
 
@@ -51,7 +50,6 @@ const getCommentsByPostId = async (id: any) => {
  */
 const updatePostById = async (id: any, body: any) => {
   const post = await postRepository.findByIdAndUpdate(id, body);
-  postLogService.createLog(post);
   return post;
 };
 
@@ -65,7 +63,6 @@ const deletePostById = async (id: any, hardDelete: boolean = false) => {
   let post;
   if (!hardDelete) {
     post = await postRepository.findByIdAndSoftDelete(id);
-    postLogService.createLog(post);
   } else {
     post = await postRepository.findByIdAndDelete(id);
   }
