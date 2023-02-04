@@ -67,6 +67,7 @@ const cascadeDelete = async function (this: any, next: any) {
   for (let i = 0; posts[i]; i++) {
     const post = posts[i];
     await Comment.deleteMany({ post: post._id });
+    await PostLog.deleteMany({ post_id: post._id });
   }
   next();
 };

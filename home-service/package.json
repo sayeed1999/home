@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev src/index.ts"
+    "start": "ts-node-dev src/index.ts",
+    "test": "ts-mocha -p tsconfig.json test/**/*.test.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bullmq": "^3.6.1",
+    "chai": "^4.3.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -19,10 +21,14 @@
     "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.4",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.16",
+    "@types/mocha": "^10.0.1",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.11.18",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   }
 }
