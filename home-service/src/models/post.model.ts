@@ -66,8 +66,8 @@ const cascadeDelete = async function (this: any, next: any) {
 
   for (let i = 0; posts[i]; i++) {
     const post = posts[i];
-    await Comment.deleteMany({ post: post._id });
-    await PostLog.deleteMany({ post_id: post._id });
+    Comment.deleteMany({ post: post._id });
+    PostLog.deleteMany({ post_id: post._id });
   }
   next();
 };
@@ -79,7 +79,7 @@ const insertLog = async function (doc: any, next: NextFunction) {
   const temp = JSON.parse(JSON.stringify(doc));
   temp.post_id = temp._id;
   delete temp._id;
-  await PostLog.create(temp);
+  PostLog.create(temp);
   next();
 };
 

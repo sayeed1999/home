@@ -1,8 +1,21 @@
 import Provider from "../../../models/provider";
 const db = Provider.getInstance();
+import { Schema, model, Types, Model } from "mongoose";
+import CustomError from "../../../utils/errors/custom-error";
 
 const create = async (body: any) => {
   const post = await db.Post.create(body);
+  return post;
+};
+
+const addCommentToPost = async (
+  postId: Types.ObjectId,
+  commentId: Types.ObjectId
+) => {
+  const post = await db.Post.findById(postId);
+  if (!post) throw new CustomError("Post not found", 400);
+  post.comments.push(commentId);
+  await post.save();
   return post;
 };
 
@@ -41,6 +54,7 @@ const findByIdAndDelete = async (id: any) => {
 
 export default {
   create,
+  addCommentToPost,
   find,
   findById,
   findByIdAndUpdate,

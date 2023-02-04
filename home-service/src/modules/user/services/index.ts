@@ -14,7 +14,7 @@ const getUserById = async (id: any) => {
   return post;
 };
 const updateUserById = async (id: any, body: any) => {
-  const post = await db.User.findByIdAndUpdate(id, body);
+  const post = await db.User.findByIdAndUpdate(id, body, { new: true });
   return post;
 };
 const deleteUserById = async (id: any) => {

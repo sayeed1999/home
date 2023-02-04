@@ -1,7 +1,9 @@
 import commentRepository from "../repository";
+import postRepository from "../../post/repository";
 
 const createComment = async (body: any) => {
   const comment = await commentRepository.create(body);
+  await postRepository.addCommentToPost(body.post, comment._id);
   return comment;
 };
 const getCommentById = async (id: any) => {

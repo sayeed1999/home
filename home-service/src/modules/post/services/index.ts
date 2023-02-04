@@ -1,5 +1,4 @@
 import Provider from "../../../models/provider";
-import postLogService from "../../post-log/services";
 import postRepository from "../repository";
 const db = Provider.getInstance();
 
