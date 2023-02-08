@@ -2,6 +2,9 @@ import express from "express";
 import { json } from "body-parser";
 import morgan from "morgan";
 import router from "./api/routes";
+// import { worker_01 } from "./message-queue";
+// worker_01;
+
 const app = express();
 
 app.use(json());
