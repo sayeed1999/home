@@ -13,11 +13,25 @@ const createPost = async (body: any) => {
 };
 
 /**
- * @description user fetches all posts on newsfeed
+ * @description admin sees all posts included deleted
  * @returns
  */
-const getAllPosts = async () => {
+const getAllPostsForAdmin = async () => {
   const post = await postRepository.find();
+  return post;
+};
+
+/**
+ * @description user fetches all posts for newsfeed
+ * @returns
+ */
+const getAllPostsForUser = async () => {
+  const post = await postRepository.find({
+    deleted: true,
+    commentsCount: 3,
+    limit: 10,
+    skip: 0,
+  });
   return post;
 };
 
@@ -70,7 +84,8 @@ const deletePostById = async (id: any, hardDelete: boolean = false) => {
 
 export default {
   createPost,
-  getAllPosts,
+  getAllPostsForUser,
+  getAllPostsForAdmin,
   getPostById,
   getCommentsByPostId,
   updatePostById,
