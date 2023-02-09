@@ -3,14 +3,16 @@ const router = Router();
 import {
   createPost,
   deletePostById,
-  getAllPosts,
+  getAllPostsForAdmin,
+  getAllPostsForUser,
   getSinglePost,
   getCommentsByPostId,
   updatePostById,
 } from "../../modules/post/controllers/rest";
 
 router.post("", createPost);
-router.get("", getAllPosts);
+router.post("", getAllPostsForAdmin);
+router.get("active-posts", getAllPostsForUser);
 router.get("/:id", getSinglePost);
 router.get("/:id/comments", getCommentsByPostId);
 router.put("/:id", updatePostById);

@@ -19,13 +19,36 @@ const addCommentToPost = async (
   return post;
 };
 
-const find = async () => {
-  const post = await db.Post.find({
-    $or: [{ deletedAt: { exists: false } }, { deletedAt: null }],
-  }).populate({
-    path: "comments",
-    options: { limit: 3 },
-  });
+const find = async ({
+  deleted = false,
+  limit = 100,
+  skip = 0,
+  commentsCount = 0,
+}: {
+  deleted?: boolean;
+  limit?: number;
+  skip?: number;
+  commentsCount?: number;
+} = {}) => {
+  // filtering datas
+  const query: any = {};
+
+  if (deleted)
+    query["$or"] = [{ deletedAt: { exists: false } }, { deletedAt: null }];
+
+  // populating sub-documents
+  let populate: any = {};
+
+  if (commentsCount)
+    populate = {
+      path: "comments",
+      options: { limit: commentsCount },
+    };
+
+  const post = await db.Post.find(query)
+    .populate(populate)
+    .skip(skip)
+    .limit(limit);
   return post;
 };
 

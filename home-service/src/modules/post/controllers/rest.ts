@@ -6,9 +6,16 @@ export const createPost = catchErrors(async (req: any, res: any, next: any) => {
   res.status(201).json({ message: "Created successfully", data });
 });
 
-export const getAllPosts = catchErrors(
+export const getAllPostsForAdmin = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await postService.getAllPosts();
+    const data = await postService.getAllPostsForAdmin();
+    res.status(200).json({ data });
+  }
+);
+
+export const getAllPostsForUser = catchErrors(
+  async (req: any, res: any, next: any) => {
+    const data = await postService.getAllPostsForUser();
     res.status(200).json({ data });
   }
 );
