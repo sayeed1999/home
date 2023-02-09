@@ -5,7 +5,6 @@ interface IProduct {
   name: string;
   description: string;
   category_id: number;
-
 }
 
 interface ProductModel extends Model<IProduct>, IProduct {}
@@ -21,7 +20,7 @@ const Product = (sequelize: Sequelize) => <ProductStatic>sequelize.define(
         type: DataTypes.BIGINT,
         allowNull: false,
         primaryKey: true,
-        autoIncrement:true
+        autoIncrement: true,
       },
       name: {
         type: DataTypes.STRING,
@@ -32,6 +31,10 @@ const Product = (sequelize: Sequelize) => <ProductStatic>sequelize.define(
         type: DataTypes.DECIMAL,
         allowNull: false,
       },
+      product_unit: {
+        type: DataTypes.TINYINT,
+        allowNull: false,
+      },
       category_id: {
         type: DataTypes.BIGINT,
         allowNull: false,
@@ -40,7 +43,6 @@ const Product = (sequelize: Sequelize) => <ProductStatic>sequelize.define(
           key: "id",
         },
       },
-      
     },
     { timestamps: true }
   );
