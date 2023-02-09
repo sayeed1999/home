@@ -27,7 +27,7 @@ const getAllPostsForAdmin = async () => {
  */
 const getAllPostsForUser = async () => {
   const post = await postRepository.find({
-    deleted: true,
+    showDeleted: false,
     commentsCount: 3,
     limit: 10,
     skip: 0,

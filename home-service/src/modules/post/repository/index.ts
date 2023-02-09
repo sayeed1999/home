@@ -20,12 +20,12 @@ const addCommentToPost = async (
 };
 
 const find = async ({
-  deleted = false,
+  showDeleted = true,
   limit = 100,
   skip = 0,
   commentsCount = 0,
 }: {
-  deleted?: boolean;
+  showDeleted?: boolean;
   limit?: number;
   skip?: number;
   commentsCount?: number;
@@ -33,8 +33,11 @@ const find = async ({
   // filtering datas
   const query: any = {};
 
-  if (deleted)
-    query["$or"] = [{ deletedAt: { exists: false } }, { deletedAt: null }];
+  if (!showDeleted)
+    query["$or"] = [
+      { showDeletedAt: { exists: false } },
+      { showDeletedAt: null },
+    ];
 
   // populating sub-documents
   let populate: any = {};
@@ -48,7 +51,10 @@ const find = async ({
   const post = await db.Post.find(query)
     .populate(populate)
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .sort({
+      createdAt: -1,
+    });
   return post;
 };
 
@@ -64,7 +70,7 @@ const findByIdAndUpdate = async (id: any, body: any) => {
 
 const findByIdAndSoftDelete = async (id: any) => {
   let body = {
-    deletedAt: Date.now(),
+    showDeletedAt: Date.now(),
   };
   const post = await db.Post.findByIdAndUpdate(id, body, { new: true });
   return post;
