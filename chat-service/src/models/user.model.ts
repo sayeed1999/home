@@ -11,6 +11,7 @@ export interface IUser extends mongoose.Document {
   profile_photo: string;
 }
 
+// User Schema
 const UserSchema = new Schema(
   {
     user_id: {
