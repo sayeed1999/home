@@ -2,7 +2,9 @@ import { catchErrors } from "../../../api/middlewares";
 import postService from "../services";
 
 export const createPost = catchErrors(async (req: any, res: any, next: any) => {
-  const data = await postService.createPost(req.body);
+  const user = req.user;
+  const post = req.body;
+  const data = await postService.createPost(user, post);
   res.status(201).json({ message: "Created successfully", data });
 });
 

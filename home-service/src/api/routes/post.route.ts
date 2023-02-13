@@ -16,7 +16,7 @@ router.all("*", authenticate);
 
 router.post("", createPost);
 router.get("", getAllPostsForAdmin);
-router.get("active-posts", getAllPostsForUser);
+router.get("/active-posts", getAllPostsForUser);
 router.get("/:id", getSinglePost);
 router.get("/:id/comments", getCommentsByPostId);
 router.put("/:id", updatePostById);

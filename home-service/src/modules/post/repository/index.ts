@@ -31,16 +31,13 @@ const find = async ({
   commentsCount?: number;
 } = {}) => {
   // filtering datas
-  const query: any = {};
+  const filter: any = {};
 
   if (!showDeleted)
-    query["$or"] = [
-      { showDeletedAt: { exists: false } },
-      { showDeletedAt: null },
-    ];
+    filter["$or"] = [{ deletedAt: { $exists: false } }, { deletedAt: null }];
 
   // populating sub-documents
-  let populate: any = {};
+  let populate: any;
 
   if (commentsCount)
     populate = {
@@ -48,13 +45,14 @@ const find = async ({
       options: { limit: commentsCount },
     };
 
-  const post = await db.Post.find(query)
-    .populate(populate)
-    .skip(skip)
-    .limit(limit)
-    .sort({
-      createdAt: -1,
-    });
+  let query = db.Post.find(filter).skip(skip).limit(limit).sort({
+    createdAt: -1,
+  });
+
+  // .populate() must have a path if used..
+  if (populate) query = query.populate(populate);
+
+  const post = await query;
   return post;
 };
 

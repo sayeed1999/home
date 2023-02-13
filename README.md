@@ -71,7 +71,7 @@ src
 
 ## Available endpoints through API Gateway
 
-#### Endpoints for accessing auth-service
+#### Accessible endpoints to auth-service
 
 Register an account:-
 
@@ -114,5 +114,52 @@ Delete current user:-
 
 ```
 DELETE /auth/current-user
+header: Authorization
+```
+
+#### Accessible endpoints to home-service
+
+Creates a post:-
+
+```
+POST /home/posts
+body
+{
+  "message": "this is a new post"
+}
+header: Authorization
+```
+
+Gets all posts for admin:-
+
+```
+description: this will get all posts with comment ids only
+GET /home/posts
+header: Authorization
+```
+
+Gets all posts for user with top 03 comments:-
+
+```
+description: this will get all posts with top 03 comments embedded into it
+GET /home/posts/active-posts
+header: Authorization
+```
+
+Gets single post (for admin/user not worked on yet):-
+
+```
+GET /home/posts/:id
+header: Authorization
+```
+
+Creates a comment:-
+
+```
+POST /home/posts/:post_id/comments
+body
+{
+  "message": "this is a comment to a post"
+}
 header: Authorization
 ```
