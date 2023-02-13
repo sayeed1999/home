@@ -15,7 +15,7 @@ import { authenticate } from "../middlewares";
 router.all("*", authenticate);
 
 router.post("", createPost);
-router.post("", getAllPostsForAdmin);
+router.get("", getAllPostsForAdmin);
 router.get("active-posts", getAllPostsForUser);
 router.get("/:id", getSinglePost);
 router.get("/:id/comments", getCommentsByPostId);

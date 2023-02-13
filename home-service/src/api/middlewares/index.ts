@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import CustomError from "../../utils/errors/custom-error";
 import { verifyToken } from "../../utils/helpers/jwt";
+import Provider from "../../models/provider";
+const db = Provider.getInstance();
 
 export const routeNotFoundHandler = (req: any, res: any, next: any) => {
   res
@@ -29,7 +31,7 @@ export const catchErrors = (controller: RequestHandler) => {
 };
 
 // Middleware function to validate the JWT and set req.user
-export const authenticate = (
+export const authenticate = async (
   req: Request | any,
   res: Response | any,
   next: NextFunction
@@ -37,9 +39,10 @@ export const authenticate = (
   const token = req.headers.authorization;
   try {
     // Verify the JWT and decode the payload
-    const decoded = verifyToken(token);
+    const decoded: any = verifyToken(token);
     // Set the user data on the request object
-    req.user = decoded;
+    const userInDB = await db.User.findOne({ user_id: decoded.id });
+    req.user = userInDB;
     next();
   } catch (err) {
     // If the JWT is invalid, return an error
