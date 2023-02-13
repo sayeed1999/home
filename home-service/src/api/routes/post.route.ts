@@ -9,6 +9,10 @@ import {
   getCommentsByPostId,
   updatePostById,
 } from "../../modules/post/controllers/rest";
+import { authenticate } from "../middlewares";
+
+// No endpoints should be accessed by unauthenticated users on the system..
+router.all("*", authenticate);
 
 router.post("", createPost);
 router.post("", getAllPostsForAdmin);
