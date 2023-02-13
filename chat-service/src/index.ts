@@ -1,7 +1,7 @@
 import express from "express";
 import { json } from "body-parser";
 import cors from "cors";
-import morgan from "morgan";
+// import morgan from "morgan";
 import router from "./api/routes";
 import config from "./config";
 import { globalErrorHandler, routeNotFoundHandler } from "./api/middlewares";
@@ -13,7 +13,7 @@ import { establishSocketConnection } from "./loaders/socket-io";
 const app = express();
 const io = establishSocketConnection(app);
 
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(json());
 app.use(
   cors({

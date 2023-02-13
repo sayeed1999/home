@@ -1,25 +1,37 @@
 import Provider from "../../../models/provider";
 const db = Provider.getInstance();
+import repository from "../repository/index";
 
-const createUser = async (body: any) => {
-  const post = await db.User.create(body);
-  return post;
+const createUser = async ({
+  name,
+  email,
+  phone,
+  password,
+}: {
+  [key: string]: string;
+}) => {
+  const user = repository.createUser({ name, email, phone, password });
+  return user;
 };
+
 const getAllUsers = async () => {
-  const post = await db.User.find();
-  return post;
+  const data = await repository.getAllUsers();
+  return data;
 };
-const getUserById = async (id: any) => {
-  const post = await db.User.findById(id);
-  return post;
+
+const getUserById = async (id: string) => {
+  const user = await repository.getUserById(id);
+  return user;
 };
-const updateUserById = async (id: any, body: any) => {
-  const post = await db.User.findByIdAndUpdate(id, body);
-  return post;
+
+const updateUserById = async (id: string, updatedInfo: any) => {
+  const data = await repository.updateUserById(id, updatedInfo);
+  return data;
 };
-const deleteUserById = async (id: any) => {
-  const post = await db.User.findByIdAndDelete(id);
-  return post;
+
+const deleteUserById = async (id: string) => {
+  const data = await repository.deleteUserById(id);
+  return data;
 };
 
 export default {
