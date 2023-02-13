@@ -17,12 +17,17 @@ const register = async ({
   [key: string]: string;
 }) => {
   if (!email || !validateEmail(email))
-    throw new CustomError("must provide a valid email", 400);
+    throw new CustomError("invalid email or password", 400);
+
   if (!password || !validatePassword(password))
     throw new CustomError(
       "must provide a strong password. criteria: min length 6, max length 100, no spaces allowed, must have one uppercase & lowercase, must have atleast two digits",
       400
     );
+
+  if (await repository.findOne({ email }))
+    throw new CustomError("invalid email or password", 400);
+
   if (!name) name = email.split("@")[0] || "";
 
   const { hashedPassword, salt } = await hashPassword(password);
