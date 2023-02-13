@@ -10,11 +10,11 @@ export interface IUser extends mongoose.Document {
 // User Schema
 const UserSchema = new Schema(
   {
-    // user_id: {
-    //   // will come from auth microservice
-    //   type: Number,
-    //   required: true,
-    // },
+    user_id: {
+      // will come from auth microservice
+      type: Number,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
