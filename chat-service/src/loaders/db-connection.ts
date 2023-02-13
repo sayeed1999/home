@@ -4,6 +4,7 @@ import config from "../config";
 // Connect to MongoDB
 export const establishDbConnection = () => {
   const connectionString: string = config.DATABASE_URL;
+
   mongoose
     .connect(connectionString, {})
     .then(() => console.log("# MongoDB connected successfully..."))
