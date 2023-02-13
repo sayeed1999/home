@@ -71,6 +71,8 @@ src
 
 ## Available endpoints through API Gateway
 
+#### Endpoints for accessing auth-service
+
 Register an account:-
 
 ```
