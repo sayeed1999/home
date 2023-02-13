@@ -6,6 +6,10 @@ import {
   getSingleComment,
   updateCommentById,
 } from "../../modules/comment/controllers/rest";
+import { authenticate } from "../middlewares";
+
+// No endpoints should be accessed by unauthenticated users on the system..
+router.all("*", authenticate);
 
 router.post("", createComment);
 router.get("/:id", getSingleComment);

@@ -13,9 +13,13 @@ router.post("/register", register);
 router.post("/login", login);
 router
   .route("/current-user")
-  .get(authenticate, getCurrentUser)
-  .patch(authenticate, secureUpdateOrDelete, updateCurrentUser)
-  .delete(authenticate, secureUpdateOrDelete, deleteCurrentUser);
+  .all(authenticate)
+  // all controllers from here gotcha pass through authenticate middleware!
+  .get(getCurrentUser)
+  .all(secureUpdateOrDelete)
+  // all controllers from here gotcha pass through secureUpdateOrDelete middleware!
+  .patch(updateCurrentUser)
+  .delete(deleteCurrentUser);
 // TODO:- need admin endpoint who can delete any users on platform
 // router.post("/forgot-password", forgotPassword);
 // router.post("/reset-password", resetEmail);

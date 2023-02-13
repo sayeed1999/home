@@ -1,5 +1,8 @@
-import { NextFunction, RequestHandler } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import CustomError from "../../utils/errors/custom-error";
+import { verifyToken } from "../../utils/helpers/jwt";
+import Provider from "../../models/provider";
+const db = Provider.getInstance();
 
 export const routeNotFoundHandler = (req: any, res: any, next: any) => {
   res
@@ -18,11 +21,56 @@ export const globalErrorHandler = (err: any, req: any, res: any, next: any) => {
 
 // Define a middleware function that wraps all controllers
 export const catchErrors = (controller: RequestHandler) => {
-  return async (req: any, res: any, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await controller(req, res, next);
     } catch (error) {
       next(error);
     }
   };
+};
+
+// Middleware function to validate the JWT and set req.user
+export const authenticate = async (
+  req: Request | any,
+  res: Response | any,
+  next: NextFunction
+) => {
+  const token = req.headers.authorization;
+  try {
+    // Verify the JWT and decode the payload
+    const decoded: any = verifyToken(token);
+    // Set the user data on the request object
+    const userInDB = await db.User.findOne({ user_id: decoded.id });
+    req.user = userInDB;
+    next();
+  } catch (err) {
+    // If the JWT is invalid, return an error
+    res.status(401).send({ message: "Unauthorized" });
+  }
+};
+
+// Middleware function to restrict one user update another user's info
+// Note:- this middleware must get chained after authenticate middleware...
+export const secureUpdateOrDelete = (
+  req: Request | any,
+  res: Response | any,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) res.status(401).send({ message: "Unauthorized" });
+
+    if (!req.params.id && req.body.id && req.user.id !== req.body.id)
+      throw Error("Cannot update another user's information");
+
+    if (
+      (req.params.id && req.user.id !== +req.params.id) ||
+      (req.body.id && req.params.id && req.body.id !== +req.params.id)
+    )
+      throw Error("Cannot update another user's information");
+
+    next();
+  } catch (err: any) {
+    res.status(403).send({ message: err.message || "Forbidden" });
+  }
 };

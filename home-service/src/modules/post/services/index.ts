@@ -1,4 +1,6 @@
 import Provider from "../../../models/provider";
+import { IPost } from "../../../models/post.model";
+import { IUser } from "../../../models/user.model";
 import postRepository from "../repository";
 const db = Provider.getInstance();
 
@@ -7,7 +9,8 @@ const db = Provider.getInstance();
  * @param body
  * @returns
  */
-const createPost = async (body: any) => {
+const createPost = async (user: IUser, body: IPost) => {
+  body.user = user._id; // current user is writing the post
   const post = await postRepository.create(body);
   return post;
 };
