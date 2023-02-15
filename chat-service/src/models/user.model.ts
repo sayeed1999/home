@@ -7,7 +7,6 @@ export interface IUser extends mongoose.Document {
   phone: string;
 }
 
-// User Schema
 const UserSchema = new Schema(
   {
     user_id: {
