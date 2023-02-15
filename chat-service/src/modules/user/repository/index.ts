@@ -12,7 +12,7 @@ const createUser = async (body: any) => {
 // : Promise<{users: IUser[], usersCount: number;}>
 const getAllUsers = async () => {
   const users = await db.User.find({});
-  const usersCount = await db.User.countDocuments();
+  const usersCount = users.length;
   return { users, usersCount };
 };
 
