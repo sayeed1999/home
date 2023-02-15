@@ -11,7 +11,7 @@ import {
 router.post("", createUser);
 router.get("", getAllUsers);
 router.get("/:id", getSingleUser);
-router.put("/:id", updateUserById);
+router.patch("/:id", updateUserById);
 router.delete("/:id", deleteUserById);
 
 export default router;

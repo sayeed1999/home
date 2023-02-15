@@ -4,8 +4,7 @@ import userService from "../services";
 
 export const createUser = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, phone, password } = req.body;
-    const user = await userService.createUser({ name, email, phone, password });
+    const user = await userService.createUser(req.body);
     res.status(201).json({ message: "Created successfully", data: user });
   }
 );

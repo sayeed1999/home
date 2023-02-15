@@ -4,11 +4,17 @@ import { MessageSchema } from "./message.model";
 
 const Schema = mongoose.Schema;
 
+export interface IConversation extends mongoose.Document {
+  conversation_type: Number;
+  participants: any[];
+  messages: any[];
+}
+
 const ConversationSchema = new Schema(
   {
     conversation_type: {
       type: Number,
-      enum: Object.values(ConversationType),
+      enum: [ConversationType.Duo, ConversationType.Group],
       required: true,
     },
     participants: [
@@ -25,4 +31,7 @@ const ConversationSchema = new Schema(
   }
 );
 
-export default mongoose.model("Conversation", ConversationSchema);
+export default mongoose.model<IConversation>(
+  "Conversation",
+  ConversationSchema
+);

@@ -9,7 +9,7 @@ export const MessageSchema = new Schema(
       ref: "User",
       required: true,
     },
-    body: {
+    text: {
       type: String,
       required: true,
     },

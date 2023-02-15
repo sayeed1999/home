@@ -3,15 +3,8 @@ import { IUser } from "../../../models/user.model";
 
 const db = Provider.getInstance();
 
-const createUser = async ({
-  name,
-  email,
-  phone,
-  password,
-}: {
-  [key: string]: string;
-}) => {
-  const user = await db.User.create({ name, email, phone, password });
+const createUser = async (body: any) => {
+  const user = await db.User.create(body);
   return user;
 };
 

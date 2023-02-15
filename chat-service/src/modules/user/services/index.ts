@@ -3,6 +3,7 @@ const db = Provider.getInstance();
 import repository from "../repository/index";
 
 const createUser = async ({
+  user_id,
   name,
   email,
   phone,
@@ -10,7 +11,7 @@ const createUser = async ({
 }: {
   [key: string]: string;
 }) => {
-  const user = repository.createUser({ name, email, phone, password });
+  const user = repository.createUser({ user_id, name, email, phone, password });
   return user;
 };
 
