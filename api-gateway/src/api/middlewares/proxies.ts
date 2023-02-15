@@ -23,3 +23,11 @@ export const ecomProxyMiddleware = createProxyMiddleware("/ecom", {
     "^/ecom": "",
   },
 });
+
+export const chatProxyMiddleware = createProxyMiddleware("/chat", {
+  target: `http://localhost:4005`,
+  changeOrigin: true,
+  pathRewrite: {
+    "^/chat": "",
+  },
+});

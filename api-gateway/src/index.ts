@@ -2,6 +2,7 @@ import express from "express";
 import { json } from "body-parser";
 import {
   authProxyMiddleware,
+  chatProxyMiddleware,
   ecomProxyMiddleware,
   homeProxyMiddleware,
 } from "./api/middlewares/proxies";
@@ -12,6 +13,7 @@ const app = express();
 app.use(authProxyMiddleware);
 app.use(homeProxyMiddleware);
 app.use(ecomProxyMiddleware);
+app.use(chatProxyMiddleware);
 
 app.use(json());
 
