@@ -1,4 +1,4 @@
 export enum ConversationType {
-  Duo = 0,
-  Group = 1,
+  Duo = 1,
+  Group = 2,
 }

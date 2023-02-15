@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { ConversationType } from "../utils/enums";
+import { MessageSchema } from "./message.model";
 
 const Schema = mongoose.Schema;
 
@@ -6,6 +8,7 @@ const ConversationSchema = new Schema(
   {
     conversation_type: {
       type: Number,
+      enum: Object.values(ConversationType),
       required: true,
     },
     participants: [
@@ -15,13 +18,7 @@ const ConversationSchema = new Schema(
         required: true,
       },
     ],
-    messages: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Message",
-        required: true,
-      },
-    ],
+    messages: [MessageSchema],
   },
   {
     timestamps: true,

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const MessageSchema = new Schema(
+export const MessageSchema = new Schema(
   {
     sender: {
       type: mongoose.Types.ObjectId,
@@ -17,4 +17,4 @@ const MessageSchema = new Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Message", MessageSchema);
+// export default mongoose.model("Message", MessageSchema);
