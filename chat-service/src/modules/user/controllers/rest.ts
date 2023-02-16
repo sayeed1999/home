@@ -14,7 +14,7 @@ export const getAllUsers = catchErrors(
     const usersData = await userService.getAllUsers();
     res
       .status(200)
-      .json({ count: usersData.usersCount, users: usersData.users });
+      .json({ count: usersData.usersCount, data: usersData.users });
   }
 );
 
