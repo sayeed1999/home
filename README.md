@@ -163,3 +163,45 @@ body
 }
 header: Authorization
 ```
+
+#### Accessible endpoints to chat-service
+
+Gets all users for admin:-
+
+```
+GET /chat/users
+header: Authorization
+```
+
+Gets current user for user:-
+
+```
+descripton: in microservice arch, every service should have own get current user(), because db different, user model different.
+GET /chat/users/current-user
+header: Authorization
+```
+
+Sends message to user in dual conversation:-
+
+```
+POST /chat/conversations/dual/:user_id
+header: Authorization
+body
+{
+  "text": "Hi ******"
+}
+```
+
+Gets conversation with user in dual conversation:-
+
+```
+GET /chat/conversations/dual/:user_id
+header: Authorization
+```
+
+Gets conversation list of current user:-
+
+```
+GET /chat/conversations/dual/conversation-list
+header: Authorization
+```
