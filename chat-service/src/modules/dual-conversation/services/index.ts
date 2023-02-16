@@ -44,12 +44,29 @@ const sendMessageToUser = async (
 
 const getMessagesWithUser = async (current_user: any, receiver_id: any) => {
   const sender_id = current_user._id;
-  const conversationInDB = await db.Conversation.findOne({
+  const conversationInDB: any = await db.Conversation.findOne({
     conversation_type: ConversationType.Duo,
     participants: {
       $all: [sender_id, receiver_id],
     },
-  });
+  })
+    .populate({
+      path: "participants",
+      select: "name email",
+      options: { lean: true }, // Return plain JavaScript objects
+    })
+    .lean();
+
+  // Note:- It will help find the sender easily!
+  // Map the participant IDs to participant objects temporarily
+  conversationInDB.participants = conversationInDB?.participants.reduce(
+    (acc: any, participant: any) => {
+      acc[participant._id] = participant;
+      return acc;
+    },
+    {}
+  );
+
   return conversationInDB;
 };
 
