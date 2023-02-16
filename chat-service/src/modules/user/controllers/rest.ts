@@ -2,6 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { catchErrors } from "../../../api/middlewares";
 import userService from "../services";
 
+export const getCurrentUser = catchErrors(
+  async (req: any, res: Response, next: NextFunction) => {
+    if (!req.user) res.status(404).json({ message: "User not found" });
+    res.status(201).json({ message: "Created successfully", data: req.user });
+  }
+);
+
 export const createUser = catchErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await userService.createUser(req.body);
