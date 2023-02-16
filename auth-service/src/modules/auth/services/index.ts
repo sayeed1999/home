@@ -57,7 +57,10 @@ const login = async ({ email, password }: { [key: string]: string }) => {
   }
 
   const token = generateToken(user);
-  return token;
+  return {
+    user,
+    token,
+  };
 };
 
 const getCurrentUser = async (id: number) => {

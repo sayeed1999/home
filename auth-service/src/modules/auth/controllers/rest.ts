@@ -9,8 +9,8 @@ export const register = catchErrors(async (req: any, res: any, next: any) => {
 
 export const login = catchErrors(async (req: any, res: any, next: any) => {
   const { email, password } = req.body;
-  const token = await authService.login({ email, password });
-  res.status(200).send({ message: "Login successful", data: { token } });
+  const data = await authService.login({ email, password });
+  res.status(200).send({ message: "Login successful", data });
 });
 
 export const getCurrentUser = catchErrors(
