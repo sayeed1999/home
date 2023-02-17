@@ -1,29 +1,30 @@
 import { Queue, QueueEvents } from "bullmq";
 import { Job, MessageQueue } from "../utils/constants";
 
-const auth_home_queue = new Queue(MessageQueue.AUTH_HOME);
-const auth_ecom_queue = new Queue(MessageQueue.AUTH_ECOM);
-const auth_chat_queue = new Queue(MessageQueue.AUTH_CHAT);
+const subscribers: { name: string; subscriber: any }[] = [];
+
+export const subscribe = (name: string, subscriber: any) => {
+  if (subscribers.find((x) => x.name === name)) return;
+  subscribers.push({ name, subscriber });
+};
 
 export const fanout_user_creation = async (user: any) => {
-  await auth_home_queue.add(Job.UserCreated, user);
-  await auth_ecom_queue.add(Job.UserCreated, user);
-  await auth_chat_queue.add(Job.UserCreated, user);
+  subscribers.map(({ name, subscriber }) =>
+    subscriber.notify_user_creation(user)
+  );
 };
 
 export const fanout_user_update = async (user: any) => {
-  await auth_home_queue.add(Job.UserUpdated, user);
-  await auth_ecom_queue.add(Job.UserUpdated, user);
-  await auth_chat_queue.add(Job.UserUpdated, user);
+  subscribers.map(({ name, subscriber }) =>
+    subscriber.notify_user_update(user)
+  );
 };
 
 export const fanout_user_deletion = async (user: any) => {
-  await auth_home_queue.add(Job.UserDeleted, user);
-  await auth_ecom_queue.add(Job.UserDeleted, user);
-  await auth_chat_queue.add(Job.UserDeleted, user);
+  subscribers.map(({ name, subscriber }) =>
+    subscriber.notify_user_deletion(user)
+  );
 };
-
-
 
 const queueEvents = [
   new QueueEvents(MessageQueue.AUTH_HOME),

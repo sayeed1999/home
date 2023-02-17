@@ -7,8 +7,8 @@ import config from "./config";
 import { globalErrorHandler, routeNotFoundHandler } from "./api/middlewares";
 import { establishDbConnection } from "./loaders/db-connection";
 import { establishSocketConnection } from "./loaders/socket-io";
-// import { worker_01 } from "./message-queue";
-// worker_01;
+import { worker_01 } from "./message-queue";
+worker_01;
 
 const app = express();
 const io = establishSocketConnection(app);

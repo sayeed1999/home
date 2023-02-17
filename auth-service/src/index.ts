@@ -5,6 +5,7 @@ import morgan from "morgan";
 import router from "./api/routes";
 import config from "./config";
 import { globalErrorHandler, routeNotFoundHandler } from "./api/middlewares";
+import { subscribeOtherServicesForUserEvents } from "./loaders/set-subscriber-for-services";
 
 const app = express();
 
@@ -16,6 +17,9 @@ app.use(
     credentials: true,
   })
 );
+
+// This line will connect other microservices as listeners to user events...
+subscribeOtherServicesForUserEvents();
 
 app.use("/", router);
 app.all("*", routeNotFoundHandler);
