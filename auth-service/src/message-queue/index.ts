@@ -11,6 +11,20 @@ export const fanout_user_creation = async (user: any) => {
   await auth_chat_queue.add(Job.UserCreated, user);
 };
 
+export const fanout_user_update = async (user: any) => {
+  await auth_home_queue.add(Job.UserUpdated, user);
+  await auth_ecom_queue.add(Job.UserUpdated, user);
+  await auth_chat_queue.add(Job.UserUpdated, user);
+};
+
+export const fanout_user_deletion = async (user: any) => {
+  await auth_home_queue.add(Job.UserDeleted, user);
+  await auth_ecom_queue.add(Job.UserDeleted, user);
+  await auth_chat_queue.add(Job.UserDeleted, user);
+};
+
+
+
 const queueEvents = [
   new QueueEvents(MessageQueue.AUTH_HOME),
   new QueueEvents(MessageQueue.AUTH_ECOM),
