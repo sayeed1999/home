@@ -17,6 +17,10 @@ const ConversationSchema = new Schema(
       enum: [ConversationType.Duo, ConversationType.Group],
       required: true,
     },
+    group_name: {
+      type: String,
+      unique: true,
+    },
     participants: [
       {
         type: Schema.Types.ObjectId,
