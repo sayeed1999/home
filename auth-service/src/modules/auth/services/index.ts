@@ -7,7 +7,11 @@ import {
 import { generateToken } from "../../../utils/helpers/jwt";
 import repository from "../repository";
 import CustomError from "../../../utils/errors/custom-error";
-import { fanout_user_creation } from "../../../message-queue";
+import {
+  fanout_user_creation,
+  fanout_user_update,
+  fanout_user_deletion,
+} from "../../../message-queue";
 
 const register = async ({
   email,
@@ -84,11 +88,19 @@ const updateCurrentUser = async (
     user.salt = salt;
   }
   const updatedUser = await user.update(user);
+
+  // notify other microservics about user update
+  fanout_user_update(user);
+
   return updatedUser;
 };
 
 const deleteCurrentUser = async (id: number) => {
   const user = await repository.deleteById(id);
+
+  // notify other microservics about user delete
+  fanout_user_deletion(user);
+
   return user;
 };
 
