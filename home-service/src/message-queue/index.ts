@@ -28,6 +28,18 @@ export const worker_01 = new Worker(MessageQueue.AUTH_HOME, async (job) => {
         gender,
         profile_photo,
       });
+    } else if (job.name === Job.UserUpdated && !!job.data) {
+      const { user_id } = job.data;
+
+      if (!user_id) throw new Error("cannot update user with user_id of null");
+
+      await userService.updateUser({ user_id }, job.data);
+    } else if (job.name === Job.UserDeleted && !!job.data) {
+      const { user_id } = job.data;
+
+      if (!user_id) throw new Error("cannot delete user with user_id of null");
+
+      await userService.deleteUser({ user_id });
     }
   } catch (err: any) {
     console.error(`# Error occurred while processing job <${job.name}>...`);
