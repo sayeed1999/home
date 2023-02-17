@@ -2,6 +2,20 @@
 
 The monorepo project will contain all microservices for the `Home` project which will have everything needed as independent services deployable via docker kubernetes! In sha Allah
 
+## Design Patterns Used
+
+#### Observer Pattern: 
+Used in auth-service for notifying other services about user creation/update/deletion. There are methods named fanout_user_creation, fanout_user_update, fanout_user_deletion but the method itself doesn't know who are its subscribers. When the project is started, message queues are subscribed to the subscription from main program. And the subscriber services just gets notified.
+
+#### Provider Pattern:
+This is not one of the 23 GoF patterns. But this is very useful when we centralize the access to all db tables or collections in our application. A application can have twenty models. But a single 'Provider' class contains all the database models or tables as its properties. So all the database models are centralized inside a single class. We can access any db models by creating an instance of the Provider class.
+
+#### Singleton Pattern:
+When creating the Provider class for accessing all db models, there is a chance that multiple instance of the Provider class may get created. So singleton pattern is used to ensure only one instance of the Provider class gets created and accessed by all end-users.
+
+#### Generic Repository Pattern:
+This is also not one of the 23 GoF patterns. But this is extremely handy in reducing the number of duplicate methods accross classes since all classes needs common CRUD methods. A single class acting as the generic repository provides common CRUD methods to all other classes, and any service inheriting from the generic class gets access to all of its methods.
+
 ## OVERALL STRUCTURE
 
 ```
