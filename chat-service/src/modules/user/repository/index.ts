@@ -1,5 +1,6 @@
 import Provider from "../../../models/provider";
 import { IUser } from "../../../models/user.model";
+import CustomError from "../../../utils/errors/custom-error";
 
 const db = Provider.getInstance();
 
@@ -26,9 +27,21 @@ const updateUserById = async (id: string, updatedInfo: any) => {
   return data;
 };
 
+const updateUser = async (filter: any = {}, body: any) => {
+  const post = await db.User.findOneAndUpdate(filter, body, { new: true });
+  return post;
+};
+
 const deleteUserById = async (id: string) => {
   const data = await db.User.deleteOne({ id });
   return data;
+};
+
+const deleteUser = async (filter: any) => {
+  if (!filter)
+    throw new CustomError("cannot delete user without filter specified", 400);
+  const post = await db.User.deleteOne(filter);
+  return post;
 };
 
 export default {
@@ -36,5 +49,7 @@ export default {
   getAllUsers,
   getUserById,
   updateUserById,
+  updateUser,
   deleteUserById,
+  deleteUser,
 };

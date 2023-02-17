@@ -1,5 +1,3 @@
-import Provider from "../../../models/provider";
-const db = Provider.getInstance();
 import repository from "../repository/index";
 
 const createUser = async ({
@@ -36,6 +34,7 @@ const deleteUserById = async (id: string) => {
 };
 
 export default {
+  ...repository,
   createUser,
   getAllUsers,
   getUserById,
