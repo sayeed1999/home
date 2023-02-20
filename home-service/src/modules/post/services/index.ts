@@ -2,6 +2,7 @@ import Provider from "../../../models/provider";
 import { IPost } from "../../../models/post.model";
 import { IUser } from "../../../models/user.model";
 import postRepository from "../repository";
+import postLogService from "../../post-log/services";
 import CustomError from "../../../utils/errors/custom-error";
 const db = Provider.getInstance();
 
@@ -13,6 +14,8 @@ const db = Provider.getInstance();
 const createPost = async (user: IUser, body: IPost) => {
   body.user = user._id; // current user is writing the post
   const post = await postRepository.create(body);
+  // insert log
+  postLogService.createLog(post);
   return post;
 };
 
@@ -69,12 +72,15 @@ const updatePostById = async (user: IUser, id: any, body: IPost) => {
   body.user = user._id; // current user is writing the post
   body._id = id;
 
-  const post = await getPostById(body._id);
+  let post = await getPostById(body._id);
 
   if (user._id.toString() !== post?.user.toString())
     throw new CustomError("Cannot edit other user's post", 403);
 
-  return await postRepository.findByIdAndUpdate(body._id, body);
+  post = await postRepository.findByIdAndUpdate(body._id, body);
+  // insert log
+  postLogService.createLog(post);
+  return post;
 };
 
 /**
@@ -95,6 +101,8 @@ const deletePostById = async (
 
   if (!hardDelete) {
     post = await postRepository.findByIdAndSoftDelete(id);
+    // insert log for soft delete
+    postLogService.createLog(post);
   } else {
     post = await postRepository.findByIdAndDelete(id);
   }

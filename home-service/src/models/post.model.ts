@@ -79,19 +79,19 @@ const cascadeDelete = async function (this: any, next: any) {
 /**
  * Implement log insertion for CRUD on posts
  */
-const insertLog = async function (doc: any, next: NextFunction) {
-  const temp = JSON.parse(JSON.stringify(doc));
-  temp.post_id = temp._id;
-  delete temp._id;
-  PostLog.create(temp);
-  next();
-};
+// const insertLog = async function (doc: any, next: NextFunction) {
+//   const temp = JSON.parse(JSON.stringify(doc));
+//   temp.post_id = temp._id;
+//   delete temp._id;
+//   PostLog.create(temp);
+//   next();
+// };
 
 PostSchema.pre("findOneAndDelete", {}, cascadeDelete);
 PostSchema.pre("deleteOne", { document: false, query: true }, cascadeDelete);
 PostSchema.pre("deleteMany", {}, cascadeDelete);
 
-PostSchema.post("save", insertLog);
-PostSchema.post("findOneAndUpdate", insertLog);
+// PostSchema.post("save", insertLog);
+// PostSchema.post("findOneAndUpdate", insertLog);
 
 export default mongoose.model<IPost>("Post", PostSchema);
