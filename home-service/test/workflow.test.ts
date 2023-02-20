@@ -191,6 +191,18 @@ describe("testing suite for whole workflow", () => {
     }
   });
 
+  it("undo soft delete on post successfully", async () => {
+    try {
+      const postInDB = await postService.undoDelete(user, post._id);
+      post = postInDB;
+      assert.notExists(post.deletedAt); // should be null
+    } catch (err) {
+      console.log(err);
+      error = err;
+      assert.notExists(error);
+    }
+  });
+
   it("post hard deleted successfully", async () => {
     try {
       let commentCountBefore = (await commentService.getComments()).length;
@@ -204,6 +216,17 @@ describe("testing suite for whole workflow", () => {
       console.log(err);
       error = err;
       assert.notExists(error);
+    }
+  });
+
+  it("<< cannot undo hard delete on post >>", async () => {
+    try {
+      const postInDB = await postService.undoDelete(user, post._id);
+      post = postInDB;
+      assert.notExists(post); // should be null
+    } catch (err) {
+      error = err;
+      assert.exists(error);
     }
   });
 

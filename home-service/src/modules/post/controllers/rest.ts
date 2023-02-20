@@ -58,3 +58,10 @@ export const deletePostById = catchErrors(
     res.status(200).json({ data });
   }
 );
+
+export const undoDeletePostById = catchErrors(
+  async (req: any, res: any, next: any) => {
+    const data = await postService.undoDelete(req.user, req.params.id);
+    res.status(200).json({ data });
+  }
+);

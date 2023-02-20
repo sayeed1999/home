@@ -8,6 +8,7 @@ import {
   getSinglePost,
   getCommentsByPostId,
   updatePostById,
+  undoDeletePostById,
 } from "../../modules/post/controllers/rest";
 import { authenticate } from "../middlewares";
 
@@ -21,5 +22,6 @@ router.get("/:id", getSinglePost);
 router.get("/:id/comments", getCommentsByPostId);
 router.patch("/:id", updatePostById);
 router.delete("/:id", deletePostById);
+router.patch("/:id/undo-delete", undoDeletePostById);
 
 export default router;

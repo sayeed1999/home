@@ -13,6 +13,7 @@ export interface IPost extends mongoose.Document {
   likes: any[];
   dislikes: any[];
   comments: any[];
+  deletedAt: Date | null;
 }
 
 export const PostSchema = new Schema(

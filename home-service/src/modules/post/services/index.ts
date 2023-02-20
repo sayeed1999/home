@@ -100,13 +100,34 @@ const deletePostById = async (
     throw new CustomError("Cannot delete other user's post", 403);
 
   if (!hardDelete) {
-    post = await postRepository.findByIdAndSoftDelete(id);
+    post = await softDelete(id);
     // insert log for soft delete
     postLogService.createLog(post);
   } else {
     post = await postRepository.findByIdAndDelete(id);
   }
   return post;
+};
+
+const softDelete = async (id: any) => {
+  let body = {
+    deletedAt: Date.now(),
+  };
+  const post = await postRepository.findByIdAndUpdate(id, body);
+  return post;
+};
+
+const undoDelete = async (user: IUser, id: any) => {
+  let post = await getPostById(id);
+
+  if (!post?.deletedAt)
+    throw new CustomError("Post is not in recycle bin", 400);
+
+  if (user._id.toString() !== post?.user.toString())
+    throw new CustomError("Cannot undo delete other user's post", 403);
+
+  const body = { deletedAt: null };
+  return await postRepository.findByIdAndUpdate(id, body);
 };
 
 export default {
@@ -117,4 +138,5 @@ export default {
   getCommentsByPostId,
   updatePostById,
   deletePostById,
+  undoDelete,
 };
