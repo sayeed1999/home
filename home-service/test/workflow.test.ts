@@ -36,8 +36,7 @@ let user: any,
   post: any,
   comment: any,
   comments: any[] = [],
-  error: any,
-  commentsCount: number;
+  error: any;
 
 describe("testing suite for whole workflow", () => {
   // user related
@@ -45,7 +44,7 @@ describe("testing suite for whole workflow", () => {
   it("user creates an account successfully", async () => {
     try {
       const userInDB = await userService.createUser({
-        user_id: 1000,
+        user_id: 1,
         name: "Md. Sayeed Rahman",
         email: "learn@sayeed.com",
       });
@@ -176,9 +175,13 @@ describe("testing suite for whole workflow", () => {
 
   it("post hard deleted successfully", async () => {
     try {
+      let commentCountBefore = (await commentService.getComments()).length;
+      let commentCountOnPost = post.comments.length;
       await postService.deletePostById(user, post._id, true); // hardDelete: true
       post = await postService.getPostById(post._id);
       assert.notExists(post);
+      let commentCountAfter = (await commentService.getComments()).length;
+      assert.equal(commentCountAfter, commentCountBefore - commentCountOnPost);
     } catch (err) {
       console.log(err);
       error = err;
@@ -188,15 +191,19 @@ describe("testing suite for whole workflow", () => {
 
   it("deleted users deleted posts too", async () => {
     try {
+      await Promise.all([
+        postService.createPost(user, { message: "dummy post!" }),
+        postService.createPost(user, { message: "dummy post!" }),
+        postService.createPost(user, { message: "dummy post!" }),
+      ]);
+      const postCountBefore = (await postService.getAllPostsForAdmin()).length;
       await userService.deleteUser({ email: user.email });
+      const postCountAfter = (await postService.getAllPostsForAdmin()).length;
+      assert.equal(postCountAfter, postCountBefore - 3);
     } catch (err) {
       console.log(err);
       error = err;
       assert.notExists(error);
     }
   });
-
-  // write unit tests to count that hard delete on posts reduced exact no of comments from db
-
-  // write unit tests to count that hard delete on users reduced exact no of posts from db
 });
