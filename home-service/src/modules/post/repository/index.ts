@@ -62,7 +62,7 @@ const findById = async (id: any) => {
 };
 
 const findByIdAndUpdate = async (id: any, body: any) => {
-  const post = await db.Post.findByIdAndUpdate(id, body);
+  const post = await db.Post.findByIdAndUpdate(id, body, { new: true });
   return post;
 };
 
