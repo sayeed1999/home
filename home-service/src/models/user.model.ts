@@ -47,20 +47,31 @@ const UserSchema = new Schema(
   }
 );
 
+let executing = false;
 /**
  * Implementing cascade deletion of posts
  */
 const cascadeDelete = async function (this: any, next: any) {
-  // retrieving the model first
-  const users = await this.model.find(this.getFilter());
+  if (!executing) {
+    executing = true;
+    // retrieving the model first
+    const users = await this.model.find(this.getFilter());
 
-  for (let i = 0; users[i]; i++) {
-    const user = users[i];
-    await Post.deleteMany({ user: user._id });
+    for (let i = 0; users[i]; i++) {
+      const user = users[i];
+      await Post.deleteMany({ user: user._id });
+    }
+    executing = false;
   }
   next();
 };
 
-UserSchema.pre("remove", { document: false, query: true }, cascadeDelete);
+UserSchema.pre(
+  "findOneAndDelete",
+  { document: false, query: true },
+  cascadeDelete
+);
+UserSchema.pre("deleteOne", { document: false, query: true }, cascadeDelete);
+UserSchema.pre("deleteMany", { document: false, query: true }, cascadeDelete);
 
 export default mongoose.model<IUser>("User", UserSchema);
