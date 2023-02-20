@@ -6,6 +6,11 @@ const create = async (body: any) => {
   return comment;
 };
 
+const getAll = async () => {
+  const comments = await db.Comment.find();
+  return comments;
+};
+
 const findById = async (id: any) => {
   const comment = await db.Comment.findById(id);
   return comment;
@@ -23,6 +28,7 @@ const findByIdAndDelete = async (id: any) => {
 
 export default {
   create,
+  getAll,
   findById,
   findByIdAndUpdate,
   findByIdAndDelete,

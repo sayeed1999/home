@@ -16,6 +16,11 @@ const createComment = async (
   return comment;
 };
 
+const getComments = async () => {
+  const comments = await commentRepository.getAll();
+  return comments;
+};
+
 const getCommentById = async (id: any) => {
   const comment = await commentRepository.findById(id);
   return comment;
@@ -31,6 +36,7 @@ const deleteCommentById = async (id: any) => {
 };
 
 export default {
+  getComments,
   createComment,
   getCommentById,
   updateCommentById,
