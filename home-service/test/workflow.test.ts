@@ -15,9 +15,9 @@ import commentService from "../src/modules/comment/services";
  */
 before(async () => {
   await mongoose.connect(config.TEST_DATABASE_URL, {
-    socketTimeoutMS: 5000,
-    serverSelectionTimeoutMS: 5000,
-    connectTimeoutMS: 5000,
+    socketTimeoutMS: 50000,
+    serverSelectionTimeoutMS: 50000,
+    connectTimeoutMS: 50000,
   });
 });
 
@@ -40,7 +40,8 @@ let user: any,
   post: any,
   comment: any,
   comments: any[] = [],
-  error: any;
+  error: any,
+  commentsCount: number;
 
 describe("testing suite for whole workflow", () => {
   // user related
@@ -48,12 +49,14 @@ describe("testing suite for whole workflow", () => {
   it("user creates an account successfully", async () => {
     try {
       const userInDB = await userService.createUser({
-        user_id: 1,
+        user_id: 1000,
         name: "Md. Sayeed Rahman",
         email: "learn@sayeed.com",
       });
+
       user = userInDB;
     } catch (err) {
+      console.log(err);
       error = err;
     }
     assert.notExists(error);
@@ -63,7 +66,7 @@ describe("testing suite for whole workflow", () => {
   it("user cannot create an account without email", async () => {
     try {
       await userService.createUser({
-        user_id: 2,
+        user_id: 1001,
         name: "Sayem",
       });
     } catch (err) {
@@ -75,7 +78,7 @@ describe("testing suite for whole workflow", () => {
   it("user should not create an account with a duplicate email", async () => {
     try {
       const userInDB = await userService.createUser({
-        user_id: 3,
+        user_id: 1002,
         name: "Md. Sayeed Rahman III",
         email: "learn@sayeed.com",
       });
@@ -121,8 +124,7 @@ describe("testing suite for whole workflow", () => {
 
   it("post created successfully", async () => {
     try {
-      const postInDB = await postService.createPost({
-        user: user._id,
+      const postInDB = await postService.createPost(user, {
         message: "Hello! I'm new to facebook...",
       });
       post = postInDB;
@@ -133,11 +135,9 @@ describe("testing suite for whole workflow", () => {
     }
   });
 
-  it("commented on postsuccessfully", async () => {
+  it("commented on post successfully", async () => {
     try {
-      const commentInDB = await commentService.createComment({
-        user: user._id,
-        post: post._id,
+      const commentInDB = await commentService.createComment(user, post._id, {
         message: "Hello! This is a new comment...",
       });
       comment = commentInDB;
@@ -151,4 +151,56 @@ describe("testing suite for whole workflow", () => {
       assert.notExists(error);
     }
   });
+
+  it("post updated successfully", async () => {
+    try {
+      const postInDB = await postService.updatePostById(user, post._id, {
+        message: "Hello! I'm new to facebook... (updated)",
+      });
+      post = postInDB;
+      assert.exists(post);
+    } catch (err) {
+      console.log(err);
+      error = err;
+      assert.notExists(error);
+    }
+  });
+
+  it("post soft deleted successfully", async () => {
+    try {
+      const postInDB = await postService.deletePostById(user, post._id);
+      post = postInDB;
+      assert.exists(post.deletedAt);
+    } catch (err) {
+      console.log(err);
+      error = err;
+      assert.notExists(error);
+    }
+  });
+
+  it("post hard deleted successfully", async () => {
+    try {
+      await postService.deletePostById(user, post._id, true); // hardDelete: true
+      post = await postService.getPostById(post._id);
+      assert.notExists(post);
+    } catch (err) {
+      console.log(err);
+      error = err;
+      assert.notExists(error);
+    }
+  });
+
+  it("deleted users deleted posts too", async () => {
+    try {
+      await userService.deleteUser({ email: user.email });
+    } catch (err) {
+      console.log(err);
+      error = err;
+      assert.notExists(error);
+    }
+  });
+
+  // write unit tests to count that hard delete on posts reduced exact no of comments from db
+
+  // write unit tests to count that hard delete on users reduced exact no of posts from db
 });
