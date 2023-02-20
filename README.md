@@ -144,6 +144,25 @@ body
 header: Authorization
 ```
 
+Updates a post:-
+
+```
+PATCH /home/posts/:id
+body
+{
+  "message": "this is a updated post"
+}
+header: Authorization
+```
+
+Deletes a post:-
+
+```
+DELETE /home/posts/:id
+header: Authorization
+```
+
+
 Gets all posts for admin:-
 
 ```
