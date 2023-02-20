@@ -19,7 +19,7 @@ router.get("", getAllPostsForAdmin);
 router.get("/active-posts", getAllPostsForUser);
 router.get("/:id", getSinglePost);
 router.get("/:id/comments", getCommentsByPostId);
-router.put("/:id", updatePostById);
+router.patch("/:id", updatePostById);
 router.delete("/:id", deletePostById);
 
 export default router;
