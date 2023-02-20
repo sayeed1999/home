@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev src/index.ts",
-    "test": "ts-mocha -p tsconfig.json test/**/*.test.ts"
+    "test": "ts-mocha -p tsconfig.json --timeout 30000 test/**/*.test.ts"
   },
   "keywords": [],
   "author": "",

@@ -61,13 +61,6 @@ const cascadeDelete = async function (this: any, next: any) {
   next();
 };
 
-UserSchema.pre(
-  "findOneAndDelete",
-  { document: false, query: true },
-  cascadeDelete
-);
-UserSchema.pre("deleteOne", { document: false, query: true }, cascadeDelete);
-UserSchema.pre("deleteMany", { document: false, query: true }, cascadeDelete);
 UserSchema.pre("remove", { document: false, query: true }, cascadeDelete);
 
 export default mongoose.model<IUser>("User", UserSchema);

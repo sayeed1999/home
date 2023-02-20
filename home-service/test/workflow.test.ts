@@ -14,11 +14,7 @@ import commentService from "../src/modules/comment/services";
  * used for test suite initializing!
  */
 before(async () => {
-  await mongoose.connect(config.TEST_DATABASE_URL, {
-    socketTimeoutMS: 50000,
-    serverSelectionTimeoutMS: 50000,
-    connectTimeoutMS: 50000,
-  });
+  await mongoose.connect(config.TEST_DATABASE_URL);
 });
 
 /**

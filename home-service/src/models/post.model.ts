@@ -63,7 +63,7 @@ export const PostSchema = new Schema(
 const cascadeDelete = async function (this: any, next: any) {
   // retrieving the model first
   const posts = await this.model.find(this.getFilter());
-
+  console.log(posts.length);
   for (let i = 0; posts[i]; i++) {
     const post = posts[i];
     await Comment.deleteMany({ post: post._id });
@@ -83,13 +83,6 @@ const insertLog = async function (doc: any, next: NextFunction) {
   next();
 };
 
-PostSchema.pre(
-  "findOneAndDelete",
-  { document: false, query: true },
-  cascadeDelete
-);
-PostSchema.pre("deleteOne", { document: false, query: true }, cascadeDelete);
-PostSchema.pre("deleteMany", { document: false, query: true }, cascadeDelete);
 PostSchema.pre("remove", { document: false, query: true }, cascadeDelete);
 
 PostSchema.post("save", insertLog);

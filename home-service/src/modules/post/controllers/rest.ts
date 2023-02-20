@@ -49,7 +49,7 @@ export const updatePostById = catchErrors(
 
 export const deletePostById = catchErrors(
   async (req: any, res: any, next: any) => {
-    let hardDelete = req.query.hardDelete;
+    let { hardDelete } = req.query;
     const data = await postService.deletePostById(
       req.user,
       req.params.id,
