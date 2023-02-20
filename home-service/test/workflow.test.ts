@@ -38,6 +38,8 @@ let user: any,
   comments: any[] = [],
   error: any;
 
+let postLogCount: number = 0;
+
 describe("testing suite for whole workflow", () => {
   // user related
 
@@ -130,6 +132,11 @@ describe("testing suite for whole workflow", () => {
     }
   });
 
+  it("when post was created, one log inserted", async () => {
+    postLogCount = (await db.PostLog.find({ post_id: post._id })).length;
+    assert.equal(postLogCount, 1);
+  });
+
   it("commented on post successfully", async () => {
     try {
       const commentInDB = await commentService.createComment(user, post._id, {
@@ -147,6 +154,11 @@ describe("testing suite for whole workflow", () => {
     }
   });
 
+  it("<< no logs should be inserted for comments on post, because i dont want db to be heavy on excessive logs >>", async () => {
+    let temp = (await db.PostLog.find({ post_id: post._id })).length;
+    assert.equal(temp, postLogCount + 0);
+  });
+
   it("post updated successfully", async () => {
     try {
       const postInDB = await postService.updatePostById(user, post._id, {
@@ -159,6 +171,12 @@ describe("testing suite for whole workflow", () => {
       error = err;
       assert.notExists(error);
     }
+  });
+
+  it("when post was updated, log inserted successfully", async () => {
+    let temp = (await db.PostLog.find({ post_id: post._id })).length;
+    assert.equal(temp, postLogCount + 1);
+    postLogCount = temp;
   });
 
   it("post soft deleted successfully", async () => {
