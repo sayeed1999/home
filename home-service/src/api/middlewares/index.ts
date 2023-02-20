@@ -30,6 +30,11 @@ export const catchErrors = (controller: RequestHandler) => {
   };
 };
 
+/**
+ * Since authenticate & secureUpdateOrDelete is not wrapped with catchErrors,
+ * so try...catch used for these two
+ */
+
 // Middleware function to validate the JWT and set req.user
 export const authenticate = async (
   req: Request | any,

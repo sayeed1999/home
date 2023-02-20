@@ -68,7 +68,7 @@ const findByIdAndUpdate = async (id: any, body: any) => {
 
 const findByIdAndSoftDelete = async (id: any) => {
   let body = {
-    showDeletedAt: Date.now(),
+    deletedAt: Date.now(),
   };
   const post = await db.Post.findByIdAndUpdate(id, body, { new: true });
   return post;

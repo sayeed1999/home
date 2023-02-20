@@ -2,6 +2,7 @@ import Provider from "../../../models/provider";
 import { IPost } from "../../../models/post.model";
 import { IUser } from "../../../models/user.model";
 import postRepository from "../repository";
+import CustomError from "../../../utils/errors/custom-error";
 const db = Provider.getInstance();
 
 /**
@@ -64,9 +65,16 @@ const getCommentsByPostId = async (id: any) => {
  * @param body
  * @returns
  */
-const updatePostById = async (id: any, body: any) => {
-  const post = await postRepository.findByIdAndUpdate(id, body);
-  return post;
+const updatePostById = async (user: IUser, id: any, body: IPost) => {
+  body.user = user._id; // current user is writing the post
+  body._id = id;
+
+  const post = await getPostById(body._id);
+
+  if (user._id.toString() !== post?.user.toString())
+    throw new CustomError("Cannot edit other user's post", 403);
+
+  return await postRepository.findByIdAndUpdate(body._id, body);
 };
 
 /**
@@ -75,8 +83,16 @@ const updatePostById = async (id: any, body: any) => {
  * @param hardDelete
  * @returns
  */
-const deletePostById = async (id: any, hardDelete: boolean = false) => {
-  let post;
+const deletePostById = async (
+  user: IUser,
+  id: any,
+  hardDelete: boolean = false
+) => {
+  let post = await getPostById(id);
+
+  if (user._id.toString() !== post?.user.toString())
+    throw new CustomError("Cannot delete other user's post", 403);
+
   if (!hardDelete) {
     post = await postRepository.findByIdAndSoftDelete(id);
   } else {
