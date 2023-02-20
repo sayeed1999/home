@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+import Post from "./post.model";
 
 export interface IUser extends mongoose.Document {
   _id: any; // mongoose _id
@@ -45,5 +46,28 @@ const UserSchema = new Schema(
     timestamps: true,
   }
 );
+
+/**
+ * Implementing cascade deletion of posts
+ */
+const cascadeDelete = async function (this: any, next: any) {
+  // retrieving the model first
+  const users = await this.model.find(this.getFilter());
+
+  for (let i = 0; users[i]; i++) {
+    const user = users[i];
+    await Post.deleteMany({ user: user._id });
+  }
+  next();
+};
+
+UserSchema.pre(
+  "findOneAndDelete",
+  { document: false, query: true },
+  cascadeDelete
+);
+UserSchema.pre("deleteOne", { document: false, query: true }, cascadeDelete);
+UserSchema.pre("deleteMany", { document: false, query: true }, cascadeDelete);
+UserSchema.pre("remove", { document: false, query: true }, cascadeDelete);
 
 export default mongoose.model<IUser>("User", UserSchema);
