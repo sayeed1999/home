@@ -1,6 +1,6 @@
 # HOME
 
-The monorepo project 'Home' will contain unit microservices targetting unit purposes e.g `api-gateway` for public access, `auth-service` for user authorization, `home-service` that acts like a facebook newsfeed, `chat-service` for dual or group conversation, ...
+The monorepo project 'Home' will contain unit microservices targetting unit purposes e.g `api-gateway` for public access, `home-service` that acts like a facebook newsfeed, `chat-service` for dual or group conversation, `auth-service` for user authorization, ...
 
 ## Design Patterns Used
 
