@@ -24,18 +24,15 @@ class PostRepository extends BaseRepository<IPost> implements IPostRepository {
     super(db.Post);
   }
 
-  addCommentToPost = async (
-    postId: Types.ObjectId,
-    commentId: Types.ObjectId
-  ) => {
+  async addCommentToPost(postId: Types.ObjectId, commentId: Types.ObjectId) {
     const post = await db.Post.findById(postId);
     if (!post) throw new CustomError("Post not found", 400);
     post.comments.push(commentId);
     await post.save();
     return post;
-  };
+  }
 
-  findAll = async ({
+  async findAll({
     showDeleted = true,
     limit = 10,
     skip = 0,
@@ -45,7 +42,7 @@ class PostRepository extends BaseRepository<IPost> implements IPostRepository {
     limit?: number;
     skip?: number;
     commentsCount?: number;
-  } = {}) => {
+  } = {}) {
     // filtering datas
     const filter: any = {};
 
@@ -61,20 +58,14 @@ class PostRepository extends BaseRepository<IPost> implements IPostRepository {
         options: { limit: commentsCount },
       };
 
-    const posts = await super.findAll(
-      filter,
-      // this way we can even change the order of passing params
-      (populate = populate),
-      (skip = skip),
-      (limit = limit)
-    );
+    const posts = await super.findAll(filter, skip, limit, populate);
     return posts;
-  };
+  }
 
-  findById = async (id: any) => {
+  async findById(id: any) {
     const post = await super.findById(id, "comments");
     return post;
-  };
+  }
 }
 
 // exporting a single instance

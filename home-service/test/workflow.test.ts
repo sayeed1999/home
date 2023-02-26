@@ -30,6 +30,7 @@ after(async () => {
 var cleanup = async () => {
   await db.User.deleteMany();
   await db.Post.deleteMany();
+  await db.Comment.deleteMany();
 };
 
 let user: any,
@@ -192,7 +193,7 @@ describe("testing suite for whole workflow", () => {
 
   it("post soft deleted successfully", async () => {
     try {
-      const postInDB = await postService.deleteById(post._id, user);
+      const postInDB = await postService.deleteById(post._id, false, user);
       post = postInDB;
       assert.exists(post.deletedAt);
     } catch (err) {
@@ -204,7 +205,7 @@ describe("testing suite for whole workflow", () => {
 
   it("undo soft delete on post successfully", async () => {
     try {
-      const postInDB = await postService.undoDelete(user, post._id);
+      const postInDB = await postService.undoDelete(post._id, user);
       post = postInDB;
       assert.notExists(post.deletedAt); // should be null
     } catch (err) {
@@ -243,7 +244,7 @@ describe("testing suite for whole workflow", () => {
 
   it("deleted users deleted posts too", async () => {
     try {
-      await Promise.all([
+      const c = await Promise.all([
         postService.create({ message: "dummy post!" }, user),
         postService.create({ message: "dummy post!" }, user),
         postService.create({ message: "dummy post!" }, user),
@@ -253,7 +254,7 @@ describe("testing suite for whole workflow", () => {
       const postCountAfter = (await postService.getAllPostsForAdmin()).length;
       assert.equal(postCountAfter, postCountBefore - 3);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       error = err;
       assert.notExists(error);
     }

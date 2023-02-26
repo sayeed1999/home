@@ -11,12 +11,6 @@ class CommentRepository
   extends BaseRepository<IComment>
   implements ICommentRepository
 {
-  // Note: use it if you're using Dependency Injection
-  // constructor(model: Model<IComment>) {
-  //   super(model);
-  // }
-
-  // Note: use it if you're not using Dependency Injection
   constructor() {
     super(db.Comment);
   }

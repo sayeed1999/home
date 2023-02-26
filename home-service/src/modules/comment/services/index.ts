@@ -18,11 +18,11 @@ class CommentService extends BaseService<IComment> implements ICommentService {
     super(commentRepository);
   }
 
-  createComment = async (
+  async createComment(
     post_id: ObjectId | string,
     body: Partial<IComment>,
     user: IUser
-  ) => {
+  ) {
     body.user = user._id; // current user is writing the comment
     body.post = post_id;
 
@@ -30,7 +30,7 @@ class CommentService extends BaseService<IComment> implements ICommentService {
     await postRepository.addCommentToPost(body.post, comment._id);
 
     return comment;
-  };
+  }
 }
 
 export default new CommentService();

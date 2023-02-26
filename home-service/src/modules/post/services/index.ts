@@ -27,7 +27,7 @@ class PostService extends BaseService<IPost> implements IPostService {
    * @param body
    * @returns
    */
-  create = async (body: Partial<IPost>, user?: IUser) => {
+  async create(body: Partial<IPost>, user?: IUser) {
     if (!user) throw new CustomError("Authorization Failed", 403);
     body.user = user._id; // current user is writing the post
 
@@ -35,22 +35,22 @@ class PostService extends BaseService<IPost> implements IPostService {
     postLogService.create(post);
 
     return post;
-  };
+  }
 
   /**
    * @description admin sees all posts included deleted
    * @returns
    */
-  getAllPostsForAdmin = async () => {
-    const post = await this.findAll();
-    return post;
-  };
+  async getAllPostsForAdmin() {
+    const posts = await postRepository.findAll();
+    return posts;
+  }
 
   /**
    * @description user fetches all posts for newsfeed
    * @returns
    */
-  getAllPostsForUser = async () => {
+  async getAllPostsForUser() {
     const post = await this.findAll({
       showDeleted: false,
       commentsCount: 3,
@@ -58,17 +58,17 @@ class PostService extends BaseService<IPost> implements IPostService {
       skip: 0,
     });
     return post;
-  };
+  }
 
   /**
    * @description gets all comments for a specific post
    * @param id
    * @returns
    */
-  getCommentsByPostId = async (id: string) => {
+  async getCommentsByPostId(id: string) {
     const comments = await commentRepository.findAll({ post: id });
     return comments;
-  };
+  }
 
   /**
    * @description updates a post
@@ -76,7 +76,7 @@ class PostService extends BaseService<IPost> implements IPostService {
    * @param body
    * @returns
    */
-  updateById = async (id: any, body: Partial<IPost>, user?: IUser) => {
+  async updateById(id: any, body: Partial<IPost>, user?: IUser) {
     if (!user) throw new CustomError("Authorization Failed", 403);
     body.user = user._id; // current user is writing the post
     body._id = id;
@@ -90,7 +90,7 @@ class PostService extends BaseService<IPost> implements IPostService {
     postLogService.create(post);
 
     return post;
-  };
+  }
 
   /**
    * hard or soft delete a post, hard delete comments too
@@ -98,7 +98,7 @@ class PostService extends BaseService<IPost> implements IPostService {
    * @param hardDelete
    * @returns
    */
-  deleteById = async (id: any, hardDelete: boolean = false, user?: IUser) => {
+  async deleteById(id: any, hardDelete: boolean = false, user?: IUser) {
     if (!user) throw new CustomError("Authorization Failed", 403);
     let post = await this.findById(id);
 
@@ -112,17 +112,17 @@ class PostService extends BaseService<IPost> implements IPostService {
       post = await super.deleteById(id);
     }
     return post;
-  };
+  }
 
-  softDelete = async (id: string) => {
+  async softDelete(id: string) {
     let body = {
       deletedAt: new Date(),
     };
     const post = await postRepository.updateById(id, body);
     return post;
-  };
+  }
 
-  undoDelete = async (id: string, user: IUser) => {
+  async undoDelete(id: string, user: IUser) {
     let post = await this.findById(id);
 
     if (!post?.deletedAt)
@@ -133,7 +133,7 @@ class PostService extends BaseService<IPost> implements IPostService {
 
     const body = { deletedAt: null };
     return await postRepository.updateById(id, body);
-  };
+  }
 }
 
 export default new PostService();

@@ -9,7 +9,7 @@ class PostLogService extends BaseService<IPostLog> implements IPostLogService {
     super(postLogRepository);
   }
 
-  create = async (body: any): Promise<IPostLog> => {
+  async create(body: any): Promise<IPostLog> {
     const temp = JSON.parse(JSON.stringify(body));
     temp.post_id = temp._id;
     delete temp._id;
@@ -20,7 +20,7 @@ class PostLogService extends BaseService<IPostLog> implements IPostLogService {
     // i don't want to rewrite those...
     const post = await super.create(temp);
     return post;
-  };
+  }
 }
 
 export default new PostLogService();
