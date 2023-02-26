@@ -4,138 +4,136 @@ import postRepository from "../repository";
 import commentRepository from "../../comment/repository";
 import postLogService from "../../post-log/services";
 import CustomError from "../../../utils/errors/custom-error";
+import BaseService, { IBaseService } from "../../base/services";
+import { IComment } from "../../../models/comment.model";
 
-/**
- * @description user creates a post
- * @param body
- * @returns
- */
-const createPost = async (user: IUser, body: IPost) => {
-  body.user = user._id; // current user is writing the post
-  const post = await postRepository.create(body);
-  // insert log
-  postLogService.create(post);
-  return post;
-};
+export interface IPostService extends IBaseService<IPost> {
+  getAllPostsForAdmin(): Promise<IPost[]>;
+  getAllPostsForUser(): Promise<IPost[]>;
+  getCommentsByPostId(id: string): Promise<IComment[]>;
+  softDelete(id: string): Promise<IPost | null>;
+  undoDelete(id: string, user: IUser): Promise<IPost | null>;
+}
 
-/**
- * @description admin sees all posts included deleted
- * @returns
- */
-const getAllPostsForAdmin = async () => {
-  const post = await postRepository.findAll();
-  return post;
-};
+class PostService extends BaseService<IPost> implements IPostService {
+  // private user: IUser;
 
-/**
- * @description user fetches all posts for newsfeed
- * @returns
- */
-const getAllPostsForUser = async () => {
-  const post = await postRepository.findAll({
-    showDeleted: false,
-    commentsCount: 3,
-    limit: 10,
-    skip: 0,
-  });
-  return post;
-};
-
-/**
- * @description gets single post
- * @param id
- * @returns
- */
-const getPostById = async (id: any) => {
-  const post = await postRepository.findById(id);
-  return post;
-};
-
-/**
- * @description gets all comments for a specific post
- * @param id
- * @returns
- */
-const getCommentsByPostId = async (id: any) => {
-  const comments = await commentRepository.findAll({ post: id });
-  return comments;
-};
-
-/**
- * @description updates a post
- * @param id
- * @param body
- * @returns
- */
-const updatePostById = async (user: IUser, id: any, body: IPost) => {
-  body.user = user._id; // current user is writing the post
-  body._id = id;
-
-  let post = await getPostById(body._id);
-
-  if (user._id.toString() !== post?.user.toString())
-    throw new CustomError("Cannot edit other user's post", 403);
-
-  post = await postRepository.updateById(body._id, body);
-  // insert log
-  postLogService.create(post);
-  return post;
-};
-
-/**
- * hard or soft delete a post, hard delete comments too
- * @param id
- * @param hardDelete
- * @returns
- */
-const deletePostById = async (
-  user: IUser,
-  id: any,
-  hardDelete: boolean = false
-) => {
-  let post = await getPostById(id);
-
-  if (user._id.toString() !== post?.user.toString())
-    throw new CustomError("Cannot delete other user's post", 403);
-
-  if (!hardDelete) {
-    post = await softDelete(id);
-    // insert log for soft delete
-    postLogService.create(post);
-  } else {
-    post = await postRepository.deleteById(id);
+  constructor() {
+    super(postRepository);
+    // this.user = user;
   }
-  return post;
-};
+  /**
+   * @description user creates a post
+   * @param body
+   * @returns
+   */
+  create = async (body: IPost, user?: IUser) => {
+    if (!user) throw new CustomError("Authorization Failed", 403);
+    body.user = user._id; // current user is writing the post
 
-const softDelete = async (id: any) => {
-  let body = {
-    deletedAt: new Date(),
+    const post = await super.create(body);
+    postLogService.create(post);
+
+    return post;
   };
-  const post = await postRepository.updateById(id, body);
-  return post;
-};
 
-const undoDelete = async (user: IUser, id: any) => {
-  let post = await getPostById(id);
+  /**
+   * @description admin sees all posts included deleted
+   * @returns
+   */
+  getAllPostsForAdmin = async () => {
+    const post = await this.findAll();
+    return post;
+  };
 
-  if (!post?.deletedAt)
-    throw new CustomError("Post is not in recycle bin", 400);
+  /**
+   * @description user fetches all posts for newsfeed
+   * @returns
+   */
+  getAllPostsForUser = async () => {
+    const post = await this.findAll({
+      showDeleted: false,
+      commentsCount: 3,
+      limit: 10,
+      skip: 0,
+    });
+    return post;
+  };
 
-  if (user._id.toString() !== post?.user.toString())
-    throw new CustomError("Cannot undo delete other user's post", 403);
+  /**
+   * @description gets all comments for a specific post
+   * @param id
+   * @returns
+   */
+  getCommentsByPostId = async (id: string) => {
+    const comments = await commentRepository.findAll({ post: id });
+    return comments;
+  };
 
-  const body = { deletedAt: null };
-  return await postRepository.updateById(id, body);
-};
+  /**
+   * @description updates a post
+   * @param id
+   * @param body
+   * @returns
+   */
+  updateById = async (id: any, body: IPost, user?: IUser) => {
+    if (!user) throw new CustomError("Authorization Failed", 403);
+    body.user = user._id; // current user is writing the post
+    body._id = id;
 
-export default {
-  createPost,
-  getAllPostsForUser,
-  getAllPostsForAdmin,
-  getPostById,
-  getCommentsByPostId,
-  updatePostById,
-  deletePostById,
-  undoDelete,
-};
+    let post = await this.findById(body._id);
+
+    if (user._id.toString() !== post?.user.toString())
+      throw new CustomError("Cannot edit other user's post", 403);
+
+    post = await super.updateById(body._id, body);
+    postLogService.create(post);
+
+    return post;
+  };
+
+  /**
+   * hard or soft delete a post, hard delete comments too
+   * @param id
+   * @param hardDelete
+   * @returns
+   */
+  deleteById = async (id: any, hardDelete: boolean = false, user?: IUser) => {
+    if (!user) throw new CustomError("Authorization Failed", 403);
+    let post = await this.findById(id);
+
+    if (user._id.toString() !== post?.user.toString())
+      throw new CustomError("Cannot delete other user's post", 403);
+
+    if (!hardDelete) {
+      post = await this.softDelete(id);
+      postLogService.create(post);
+    } else {
+      post = await super.deleteById(id);
+    }
+    return post;
+  };
+
+  softDelete = async (id: string) => {
+    let body = {
+      deletedAt: new Date(),
+    };
+    const post = await postRepository.updateById(id, body);
+    return post;
+  };
+
+  undoDelete = async (id: string, user: IUser) => {
+    let post = await this.findById(id);
+
+    if (!post?.deletedAt)
+      throw new CustomError("Post is not in recycle bin", 400);
+
+    if (user._id.toString() !== post?.user.toString())
+      throw new CustomError("Cannot undo delete other user's post", 403);
+
+    const body = { deletedAt: null };
+    return await postRepository.updateById(id, body);
+  };
+}
+
+export default new PostService();

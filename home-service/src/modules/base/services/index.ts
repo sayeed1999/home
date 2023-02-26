@@ -1,14 +1,15 @@
 import { Document } from "mongoose";
+import { IUser } from "../../../models/user.model";
 import { IBaseRepository } from "../repository";
 
 export interface IBaseService<T extends Document> {
-  create(data: Partial<T>): Promise<T>;
+  create(data: Partial<T>, user?: IUser): Promise<T>;
   findById(id: string): Promise<T | null>;
   findAll(filter: any): Promise<T[]>;
-  updateById(id: string, data: Partial<T>): Promise<T | null>;
-  update(filter: any, data: Partial<T>): Promise<T | null>;
-  deleteById(id: string): Promise<T | null>;
-  delete(filter: any): Promise<T | null>;
+  updateById(id: string, data: Partial<T>, user?: IUser): Promise<T | null>;
+  update(filter: any, data: Partial<T>, user?: IUser): Promise<T | null>;
+  deleteById(id: string, hardDelete: boolean, user?: IUser): Promise<T | null>;
+  delete(filter: any, user?: IUser): Promise<T | null>;
 }
 
 export default class BaseService<T extends Document>

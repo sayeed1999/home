@@ -4,7 +4,7 @@ import postService from "../services";
 export const createPost = catchErrors(async (req: any, res: any, next: any) => {
   const user = req.user;
   const post = req.body;
-  const data = await postService.createPost(user, post);
+  const data = await postService.create(post, user);
   res.status(201).json({ message: "Created successfully", data });
 });
 
@@ -24,7 +24,7 @@ export const getAllPostsForUser = catchErrors(
 
 export const getSinglePost = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await postService.getPostById(req.params.id);
+    const data = await postService.findById(req.params.id);
     res.status(200).json({ data });
   }
 );
@@ -38,10 +38,10 @@ export const getCommentsByPostId = catchErrors(
 
 export const updatePostById = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await postService.updatePostById(
-      req.user,
+    const data = await postService.updateById(
       req.params.id,
-      req.body
+      req.body,
+      req.user
     );
     res.status(200).json({ data });
   }
@@ -50,10 +50,10 @@ export const updatePostById = catchErrors(
 export const deletePostById = catchErrors(
   async (req: any, res: any, next: any) => {
     let { hardDelete } = req.query;
-    const data = await postService.deletePostById(
-      req.user,
+    const data = await postService.deleteById(
       req.params.id,
-      hardDelete
+      hardDelete,
+      req.user
     );
     res.status(200).json({ data });
   }
@@ -61,7 +61,7 @@ export const deletePostById = catchErrors(
 
 export const undoDeletePostById = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await postService.undoDelete(req.user, req.params.id);
+    const data = await postService.undoDelete(req.params.id, req.user);
     res.status(200).json({ data });
   }
 );
