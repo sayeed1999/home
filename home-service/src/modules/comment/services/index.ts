@@ -5,7 +5,13 @@ import { IUser } from "../../../models/user.model";
 import { IComment } from "../../../models/comment.model";
 import BaseService, { IBaseService } from "../../base/services";
 
-export interface ICommentService extends IBaseService<IComment> {}
+export interface ICommentService extends IBaseService<IComment> {
+  createComment(
+    post_id: ObjectId | string,
+    body: IComment,
+    user: IUser
+  ): Promise<IComment>;
+}
 
 class CommentService extends BaseService<IComment> implements ICommentService {
   constructor() {
