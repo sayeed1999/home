@@ -14,7 +14,7 @@ const createPost = async (user: IUser, body: IPost) => {
   body.user = user._id; // current user is writing the post
   const post = await postRepository.create(body);
   // insert log
-  postLogService.createLog(post);
+  postLogService.create(post);
   return post;
 };
 
@@ -78,7 +78,7 @@ const updatePostById = async (user: IUser, id: any, body: IPost) => {
 
   post = await postRepository.updateById(body._id, body);
   // insert log
-  postLogService.createLog(post);
+  postLogService.create(post);
   return post;
 };
 
@@ -101,7 +101,7 @@ const deletePostById = async (
   if (!hardDelete) {
     post = await softDelete(id);
     // insert log for soft delete
-    postLogService.createLog(post);
+    postLogService.create(post);
   } else {
     post = await postRepository.deleteById(id);
   }
