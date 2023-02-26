@@ -1,11 +1,13 @@
 import Provider from "../../../models/provider";
 const db = Provider.getInstance();
+import postLogRepository from "../repository";
 
 const createLog = async (body: any) => {
   const temp = JSON.parse(JSON.stringify(body));
   temp.post_id = temp._id;
   delete temp._id;
-  const post = await db.PostLog.create(temp);
+
+  const post = await postLogRepository.create(temp);
   return post;
 };
 
