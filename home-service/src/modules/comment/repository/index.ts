@@ -1,35 +1,27 @@
+import { IComment } from "../../../models/comment.model";
 import Provider from "../../../models/provider";
+import BaseRepository, { IBaseRepository } from "../../base/repository";
 const db = Provider.getInstance();
 
-const create = async (body: any) => {
-  const comment = await db.Comment.create(body);
-  return comment;
-};
+export interface ICommentRepository extends IBaseRepository<IComment> {
+  // add any specific methods for user repository
+}
 
-const getAll = async () => {
-  const comments = await db.Comment.find();
-  return comments;
-};
+class CommentRepository
+  extends BaseRepository<IComment>
+  implements ICommentRepository
+{
+  // Note: use it if you're using Dependency Injection
+  // constructor(model: Model<IComment>) {
+  //   super(model);
+  // }
 
-const findById = async (id: any) => {
-  const comment = await db.Comment.findById(id);
-  return comment;
-};
+  // Note: use it if you're not using Dependency Injection
+  constructor() {
+    super(db.Comment);
+  }
+}
 
-const findByIdAndUpdate = async (id: any, body: any) => {
-  const comment = await db.Comment.findByIdAndUpdate(id, body);
-  return comment;
-};
-
-const findByIdAndDelete = async (id: any) => {
-  const comment = await db.Comment.findByIdAndDelete(id);
-  return comment;
-};
-
-export default {
-  create,
-  getAll,
-  findById,
-  findByIdAndUpdate,
-  findByIdAndDelete,
-};
+// exporting a single instance
+const instance = new CommentRepository();
+export default instance;

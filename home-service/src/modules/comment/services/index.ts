@@ -17,7 +17,7 @@ const createComment = async (
 };
 
 const getComments = async () => {
-  const comments = await commentRepository.getAll();
+  const comments = await commentRepository.findAll();
   return comments;
 };
 
@@ -27,11 +27,11 @@ const getCommentById = async (id: any) => {
 };
 
 const updateCommentById = async (id: any, body: any) => {
-  const comment = await commentRepository.findByIdAndUpdate(id, body);
+  const comment = await commentRepository.updateById(id, body);
   return comment;
 };
 const deleteCommentById = async (id: any) => {
-  const comment = await commentRepository.findByIdAndDelete(id);
+  const comment = await commentRepository.deleteById(id);
   return comment;
 };
 
