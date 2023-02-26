@@ -27,7 +27,7 @@ class PostService extends BaseService<IPost> implements IPostService {
    * @param body
    * @returns
    */
-  create = async (body: IPost, user?: IUser) => {
+  create = async (body: Partial<IPost>, user?: IUser) => {
     if (!user) throw new CustomError("Authorization Failed", 403);
     body.user = user._id; // current user is writing the post
 
@@ -76,7 +76,7 @@ class PostService extends BaseService<IPost> implements IPostService {
    * @param body
    * @returns
    */
-  updateById = async (id: any, body: IPost, user?: IUser) => {
+  updateById = async (id: any, body: Partial<IPost>, user?: IUser) => {
     if (!user) throw new CustomError("Authorization Failed", 403);
     body.user = user._id; // current user is writing the post
     body._id = id;

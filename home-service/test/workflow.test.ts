@@ -45,7 +45,7 @@ describe("testing suite for whole workflow", () => {
 
   it("user creates an account successfully", async () => {
     try {
-      const userInDB = await userService.createUser({
+      const userInDB = await userService.create({
         user_id: 1,
         name: "Md. Sayeed Rahman",
         email: "learn@sayeed.com",
@@ -62,7 +62,7 @@ describe("testing suite for whole workflow", () => {
 
   it("user cannot create an account without email", async () => {
     try {
-      await userService.createUser({
+      await userService.create({
         user_id: 1001,
         name: "Sayem",
       });
@@ -74,7 +74,7 @@ describe("testing suite for whole workflow", () => {
 
   it("user should not create an account with a duplicate email", async () => {
     try {
-      const userInDB = await userService.createUser({
+      const userInDB = await userService.create({
         user_id: 1002,
         name: "Md. Sayeed Rahman III",
         email: "learn@sayeed.com",
@@ -88,7 +88,7 @@ describe("testing suite for whole workflow", () => {
 
   it("getAllUsers() working properly", async () => {
     try {
-      const usersInDB = await userService.getAllUsers();
+      const usersInDB = await userService.findAll();
       assert.equal(usersInDB.length, 1);
     } catch (err) {
       error = err;
@@ -98,7 +98,7 @@ describe("testing suite for whole workflow", () => {
 
   it("getUserById() working properly", async () => {
     try {
-      const userInDB = await userService.getUserById(user._id);
+      const userInDB = await userService.findById(user._id);
       assert.notDeepEqual(userInDB, user);
     } catch (err) {
       error = err;
@@ -108,7 +108,7 @@ describe("testing suite for whole workflow", () => {
 
   it("updateUserById() working properly", async () => {
     try {
-      const userInDB = await userService.updateUserById(user._id, {
+      const userInDB = await userService.updateById(user._id, {
         phone: "0123456",
       });
       assert.equal(userInDB?.phone, "0123456");
@@ -121,9 +121,12 @@ describe("testing suite for whole workflow", () => {
 
   it("post created successfully", async () => {
     try {
-      const postInDB = await postService.createPost(user, {
-        message: "Hello! I'm new to facebook...",
-      });
+      const postInDB = await postService.create(
+        {
+          message: "Hello! I'm new to facebook...",
+        },
+        user
+      );
       post = postInDB;
       assert.exists(post);
     } catch (err) {
@@ -139,11 +142,15 @@ describe("testing suite for whole workflow", () => {
 
   it("commented on post successfully", async () => {
     try {
-      const commentInDB = await commentService.createComment(user, post._id, {
-        message: "Hello! This is a new comment...",
-      });
+      const commentInDB = await commentService.createComment(
+        post._id,
+        {
+          message: "Hello! This is a new comment...",
+        },
+        user
+      );
       comment = commentInDB;
-      const postInDB = await postService.getPostById(post._id);
+      const postInDB = await postService.findById(post._id);
       post = postInDB;
       assert.exists(comment);
       assert.equal(postInDB?.comments.length, 1);
@@ -161,9 +168,13 @@ describe("testing suite for whole workflow", () => {
 
   it("post updated successfully", async () => {
     try {
-      const postInDB = await postService.updatePostById(user, post._id, {
-        message: "Hello! I'm new to facebook... (updated)",
-      });
+      const postInDB = await postService.updateById(
+        post._id,
+        {
+          message: "Hello! I'm new to facebook... (updated)",
+        },
+        user
+      );
       post = postInDB;
       assert.exists(post);
     } catch (err) {
@@ -181,7 +192,7 @@ describe("testing suite for whole workflow", () => {
 
   it("post soft deleted successfully", async () => {
     try {
-      const postInDB = await postService.deletePostById(user, post._id);
+      const postInDB = await postService.deleteById(post._id, user);
       post = postInDB;
       assert.exists(post.deletedAt);
     } catch (err) {
@@ -205,12 +216,12 @@ describe("testing suite for whole workflow", () => {
 
   it("post hard deleted successfully", async () => {
     try {
-      let commentCountBefore = (await commentService.getComments()).length;
+      let commentCountBefore = (await commentService.findAll()).length;
       let commentCountOnPost = post.comments.length;
-      await postService.deletePostById(user, post._id, true); // hardDelete: true
-      post = await postService.getPostById(post._id);
+      await postService.deleteById(post._id, true, user); // hardDelete: true
+      post = await postService.findById(post._id);
       assert.notExists(post);
-      let commentCountAfter = (await commentService.getComments()).length;
+      let commentCountAfter = (await commentService.findAll()).length;
       assert.equal(commentCountAfter, commentCountBefore - commentCountOnPost);
     } catch (err) {
       console.log(err);
@@ -233,12 +244,12 @@ describe("testing suite for whole workflow", () => {
   it("deleted users deleted posts too", async () => {
     try {
       await Promise.all([
-        postService.createPost(user, { message: "dummy post!" }),
-        postService.createPost(user, { message: "dummy post!" }),
-        postService.createPost(user, { message: "dummy post!" }),
+        postService.create({ message: "dummy post!" }, user),
+        postService.create({ message: "dummy post!" }, user),
+        postService.create({ message: "dummy post!" }, user),
       ]);
       const postCountBefore = (await postService.getAllPostsForAdmin()).length;
-      await userService.deleteUser({ email: user.email });
+      await userService.delete({ email: user.email });
       const postCountAfter = (await postService.getAllPostsForAdmin()).length;
       assert.equal(postCountAfter, postCountBefore - 3);
     } catch (err) {

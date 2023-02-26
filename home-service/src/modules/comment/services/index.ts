@@ -20,7 +20,7 @@ class CommentService extends BaseService<IComment> implements ICommentService {
 
   createComment = async (
     post_id: ObjectId | string,
-    body: IComment,
+    body: Partial<IComment>,
     user: IUser
   ) => {
     body.user = user._id; // current user is writing the comment
