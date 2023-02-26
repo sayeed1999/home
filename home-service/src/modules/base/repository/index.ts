@@ -8,7 +8,7 @@ import { catchErrors } from "../../../api/middlewares";
 export interface IBaseRepository<T extends Document> {
   create(data: Partial<T>): Promise<T>;
   findById(id: string): Promise<T | null>;
-  findAll(): Promise<T[]>;
+  findAll(filter: any): Promise<T[]>;
   updateById(id: string, data: Partial<T>): Promise<T | null>;
   update(filter: any, data: Partial<T>): Promise<T | null>;
   deleteById(id: string): Promise<T | null>;
@@ -34,8 +34,8 @@ export default class BaseRepository<T extends Document>
     return data;
   }
 
-  async findAll(): Promise<T[]> {
-    const data = await this.model.find();
+  async findAll(filter: any = {}): Promise<T[]> {
+    const data = await this.model.find(filter);
     return data;
   }
 

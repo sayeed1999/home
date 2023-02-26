@@ -1,10 +1,9 @@
-import Provider from "../../../models/provider";
 import { IPost } from "../../../models/post.model";
 import { IUser } from "../../../models/user.model";
 import postRepository from "../repository";
+import commentRepository from "../../comment/repository";
 import postLogService from "../../post-log/services";
 import CustomError from "../../../utils/errors/custom-error";
-const db = Provider.getInstance();
 
 /**
  * @description user creates a post
@@ -24,7 +23,7 @@ const createPost = async (user: IUser, body: IPost) => {
  * @returns
  */
 const getAllPostsForAdmin = async () => {
-  const post = await postRepository.find();
+  const post = await postRepository.findAll();
   return post;
 };
 
@@ -33,7 +32,7 @@ const getAllPostsForAdmin = async () => {
  * @returns
  */
 const getAllPostsForUser = async () => {
-  const post = await postRepository.find({
+  const post = await postRepository.findAll({
     showDeleted: false,
     commentsCount: 3,
     limit: 10,
@@ -58,7 +57,7 @@ const getPostById = async (id: any) => {
  * @returns
  */
 const getCommentsByPostId = async (id: any) => {
-  const comments = await db.Comment.find({ post: id });
+  const comments = await commentRepository.findAll({ post: id });
   return comments;
 };
 
@@ -77,7 +76,7 @@ const updatePostById = async (user: IUser, id: any, body: IPost) => {
   if (user._id.toString() !== post?.user.toString())
     throw new CustomError("Cannot edit other user's post", 403);
 
-  post = await postRepository.findByIdAndUpdate(body._id, body);
+  post = await postRepository.updateById(body._id, body);
   // insert log
   postLogService.createLog(post);
   return post;
@@ -104,16 +103,16 @@ const deletePostById = async (
     // insert log for soft delete
     postLogService.createLog(post);
   } else {
-    post = await postRepository.findByIdAndDelete(id);
+    post = await postRepository.deleteById(id);
   }
   return post;
 };
 
 const softDelete = async (id: any) => {
   let body = {
-    deletedAt: Date.now(),
+    deletedAt: new Date(),
   };
-  const post = await postRepository.findByIdAndUpdate(id, body);
+  const post = await postRepository.updateById(id, body);
   return post;
 };
 
@@ -127,7 +126,7 @@ const undoDelete = async (user: IUser, id: any) => {
     throw new CustomError("Cannot undo delete other user's post", 403);
 
   const body = { deletedAt: null };
-  return await postRepository.findByIdAndUpdate(id, body);
+  return await postRepository.updateById(id, body);
 };
 
 export default {
