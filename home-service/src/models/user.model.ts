@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 const Schema = mongoose.Schema;
 import Post from "./post.model";
 
-export interface IUser extends mongoose.Document {
+export interface IUser extends Document {
   _id: any; // mongoose _id
   user_id: number; // id from auth-service
   name: string;
