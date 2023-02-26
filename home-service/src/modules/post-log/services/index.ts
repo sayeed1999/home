@@ -1,34 +1,26 @@
-import Provider from "../../../models/provider";
-const db = Provider.getInstance();
+import { IPostLog } from "../../../models/post-log.model";
+import BaseService, { IBaseService } from "../../base/services";
 import postLogRepository from "../repository";
 
-const createLog = async (body: any) => {
-  const temp = JSON.parse(JSON.stringify(body));
-  temp.post_id = temp._id;
-  delete temp._id;
+export interface IPostLogService extends IBaseService<IPostLog> {}
 
-  const post = await postLogRepository.create(temp);
-  return post;
-};
+class PostLogService extends BaseService<IPostLog> implements IPostLogService {
+  constructor() {
+    super(postLogRepository);
+  }
 
-const getAllLogs = async () => {
-  const post = await db.PostLog.find();
-  return post;
-};
+  create = async (body: any): Promise<IPostLog> => {
+    const temp = JSON.parse(JSON.stringify(body));
+    temp.post_id = temp._id;
+    delete temp._id;
 
-const getLogById = async (id: any) => {
-  const post = await db.PostLog.findById(id);
-  return post;
-};
+    // this way, I am calling the parent's method sitting in overriden child method!
+    // this saves me from accessing the repository layer from here
+    // because if there were 3lines of business logic in parent's create() method,
+    // i don't want to rewrite those...
+    const post = await super.create(temp);
+    return post;
+  };
+}
 
-const deleteLogById = async (id: any) => {
-  const post = await db.PostLog.findByIdAndDelete(id);
-  return post;
-};
-
-export default {
-  createLog,
-  getAllLogs,
-  getLogById,
-  deleteLogById,
-};
+export default new PostLogService();
