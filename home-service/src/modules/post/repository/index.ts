@@ -9,6 +9,8 @@ export interface IPostRepository extends IBaseRepository<IPost> {
   // add any specific methods for user repository
 }
 
+// TODO:- need to refractor this...
+
 class PostRepository extends BaseRepository<IPost> implements IPostRepository {
   // Note: use it if you're using Dependency Injection
   // constructor(model: Model<IComment>) {

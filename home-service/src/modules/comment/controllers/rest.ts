@@ -11,24 +11,21 @@ export const createComment = catchErrors(
 
 export const getSingleComment = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await commentService.getCommentById(req.params.id);
+    const data = await commentService.findById(req.params.id);
     res.status(200).json({ data });
   }
 );
 
 export const updateCommentById = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await commentService.updateCommentById(
-      req.params.id,
-      req.body
-    );
+    const data = await commentService.updateById(req.params.id, req.body);
     res.status(200).json({ data });
   }
 );
 
 export const deleteCommentById = catchErrors(
   async (req: any, res: any, next: any) => {
-    const data = await commentService.deleteCommentById(req.params.id);
+    const data = await commentService.deleteById(req.params.id);
     res.status(200).json({ data });
   }
 );
