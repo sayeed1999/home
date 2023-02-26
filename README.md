@@ -1,6 +1,6 @@
 # HOME
 
-The monorepo project will contain all microservices for the `Home` project which will have everything needed as independent services deployable via docker kubernetes! In sha Allah
+The monorepo project 'Home' will contain unit microservices targetting unit purposes e.g api-gateway, auth-service, home-service, chat-service, ...
 
 ## Design Patterns Used
 
