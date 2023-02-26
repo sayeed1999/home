@@ -29,13 +29,26 @@ export default class BaseRepository<T extends Document>
     return data;
   }
 
-  async findById(id: string): Promise<T | null> {
-    const data = await this.model.findById(id);
+  async findById(id: string, populate: any = undefined): Promise<T | null> {
+    let query: any = this.model.findById(id);
+    if (populate) query = query.populate(populate);
+    const data = await query;
     return data;
   }
 
-  async findAll(filter: any = {}): Promise<T[]> {
-    const data = await this.model.find(filter);
+  async findAll(
+    filter: any = {},
+    skip: number = 0,
+    limit: number = 10,
+    populate: any = undefined,
+    sort: any = {
+      createdAt: -1,
+    }
+  ): Promise<T[]> {
+    let query: any = this.model.find(filter).skip(skip).limit(limit).sort(sort);
+    // .populate() must have a path if used..
+    if (populate) query = query.populate(populate);
+    const data = await query;
     return data;
   }
 

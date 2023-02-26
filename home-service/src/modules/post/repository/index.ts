@@ -6,10 +6,12 @@ import { IPost } from "../../../models/post.model";
 import BaseRepository, { IBaseRepository } from "../../base/repository";
 
 export interface IPostRepository extends IBaseRepository<IPost> {
-  // add any specific methods for user repository
+  // add any specific methods for post repository
+  addCommentToPost(
+    postId: Types.ObjectId,
+    commentId: Types.ObjectId
+  ): Promise<IPost>;
 }
-
-// TODO:- need to refractor this...
 
 class PostRepository extends BaseRepository<IPost> implements IPostRepository {
   // Note: use it if you're using Dependency Injection
@@ -35,7 +37,7 @@ class PostRepository extends BaseRepository<IPost> implements IPostRepository {
 
   findAll = async ({
     showDeleted = true,
-    limit = 100,
+    limit = 10,
     skip = 0,
     commentsCount = 0,
   }: {
@@ -59,19 +61,18 @@ class PostRepository extends BaseRepository<IPost> implements IPostRepository {
         options: { limit: commentsCount },
       };
 
-    let query = db.Post.find(filter).skip(skip).limit(limit).sort({
-      createdAt: -1,
-    });
-
-    // .populate() must have a path if used..
-    if (populate) query = query.populate(populate);
-
-    const post = await query;
-    return post;
+    const posts = await super.findAll(
+      filter,
+      // this way we can even change the order of passing params
+      (populate = populate),
+      (skip = skip),
+      (limit = limit)
+    );
+    return posts;
   };
 
   findById = async (id: any) => {
-    const post = await db.Post.findById(id).populate("comments");
+    const post = await super.findById(id, "comments");
     return post;
   };
 }
