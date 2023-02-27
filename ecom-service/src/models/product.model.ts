@@ -3,8 +3,13 @@ import { Sequelize, Model, DataTypes, BuildOptions } from "sequelize";
 interface IProduct {
   id: number;
   name: string;
-  description: string;
+  desc: string;
+  sku: string;
+  price: number;
+  product_unit: number;
   category_id: number;
+  inventory_id: number;
+  discount_id: number;
 }
 
 interface ProductModel extends Model<IProduct>, IProduct {}
@@ -27,6 +32,12 @@ const Product = (sequelize: Sequelize) => <ProductStatic>sequelize.define(
         allowNull: false,
         unique: true,
       },
+      desc: {
+        type: DataTypes.STRING,
+      },
+      sku: {
+        type: DataTypes.STRING,
+      },
       price: {
         type: DataTypes.DECIMAL,
         allowNull: false,
@@ -40,6 +51,21 @@ const Product = (sequelize: Sequelize) => <ProductStatic>sequelize.define(
         allowNull: false,
         references: {
           model: "Categories",
+          key: "id",
+        },
+      },
+      inventory_id: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+        references: {
+          model: "Inventories",
+          key: "id",
+        },
+      },
+      discount_id: {
+        type: DataTypes.BIGINT,
+        references: {
+          model: "Discounts",
           key: "id",
         },
       },
