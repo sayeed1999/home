@@ -4,7 +4,7 @@ import CustomError from "../../../utils/errors/custom-error";
 const db = Provider.getInstance();
 
 export default class DualConversationService {
-  private conversation_type = ConversationType.Duo;
+  conversation_type = ConversationType.Duo;
 
   async sendMessageToUser(
     current_user: any,
