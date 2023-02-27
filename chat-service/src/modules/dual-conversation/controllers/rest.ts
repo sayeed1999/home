@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { catchErrors } from "../../../api/middlewares";
-import service from "../services";
+import Service from "../services";
+const service = new Service();
 
 export const sendMessageToUser = catchErrors(
   async (req: any, res: Response, next: NextFunction) => {
